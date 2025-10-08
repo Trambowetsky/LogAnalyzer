@@ -1,0 +1,30 @@
+@model IEnumerable<UniversalLogParser.Models.LogEntry>
+
+<h2>Log Entries</h2>
+
+<form asp-action="Upload" asp-controller="Log" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" />
+    <button type="submit">Upload</button>
+</form>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Date</th>
+        <th>Level</th>
+        <th>Source</th>
+        <th>Message</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var log in Model)
+    {
+        <tr>
+            <td>@log.Date</td>
+            <td>@log.Level</td>
+            <td>@log.Source</td>
+            <td>@log.Message</td>
+        </tr>
+    }
+    </tbody>
+</table>
