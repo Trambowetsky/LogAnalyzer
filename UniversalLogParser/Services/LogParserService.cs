@@ -7,9 +7,9 @@ namespace UniversalLogParser.Services;
 
 public class LogParserService : ILogParserService
 {
-private readonly Regex _regex = new Regex(
-    @"^(?<date>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{3}) \[(?<level>\w+)\] (?<source>.*?)(?:\r?\n(?<message>(?:(?!\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}).)+))?$",
-    RegexOptions.Compiled | RegexOptions.Multiline);
+    private readonly Regex _regex = new Regex(
+        @"^(?<date>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}) \[(?<level>\w+)\] (?<message>(?:.|\r?\n(?!\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}))+)",
+        RegexOptions.Compiled | RegexOptions.Multiline);
 
     public IEnumerable<LogEntry> Parse(string filePath)
     {
@@ -24,7 +24,6 @@ private readonly Regex _regex = new Regex(
                 {
                     Date = DateTime.Parse(match.Groups["date"].Value),
                     Level = match.Groups["level"].Value,
-                    Source = match.Groups["source"].Value,
                     Message = match.Groups["message"].Value
                 });
             }
