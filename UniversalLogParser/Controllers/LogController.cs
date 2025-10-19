@@ -47,6 +47,9 @@ public class LogController : Controller
 
     protected virtual async Task<int> CreateLogFileOnUploading(IFormFile file)
     {
+        int fileId = CheckIfLogFileExists(file);
+        if (fileId > 0)
+            return fileId;
         var logFile = new LogFile {
             FileName = file.FileName,
             UploadedOn = DateTime.UtcNow,
