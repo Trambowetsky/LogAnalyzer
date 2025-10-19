@@ -8,5 +8,7 @@ public class LogFile
     
     public DateTime UploadedOn { get; set; }
     
+    public long FileSize { get; set; }
+    
     public List<LogEntry> Entries { get; set; } = new();
 }

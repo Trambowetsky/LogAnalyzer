@@ -45,15 +45,27 @@ public class LogController : Controller
         return RedirectToAction("Index");
     }
 
-    protected async virtual Task<int> CreateLogFileOnUploading(IFormFile file)
+    protected virtual async Task<int> CreateLogFileOnUploading(IFormFile file)
     {
         var logFile = new LogFile {
             FileName = file.FileName,
-            UploadedOn = DateTime.UtcNow
+            UploadedOn = DateTime.UtcNow,
+            FileSize = file.Length
         };
         _context.LogFiles.Add(logFile);
         await _context.SaveChangesAsync();
         
         return logFile.Id;
+    }
+
+    protected virtual int CheckIfLogFileExists(IFormFile file)
+    {
+        var fileId = _context.LogFiles
+            .Where(x => x.FileName == file.FileName)
+            .Where(y => y.FileSize == file.Length)
+            .Select(x => x.Id)
+            .FirstOrDefault();
+        
+        return fileId;
     }
 }
