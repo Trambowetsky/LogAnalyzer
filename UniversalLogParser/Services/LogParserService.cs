@@ -11,7 +11,7 @@ public class LogParserService : ILogParserService
         @"^(?<date>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}) \[(?<level>\w+)\] (?<message>(?:.|\r?\n(?!\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}))+)",
         RegexOptions.Compiled | RegexOptions.Multiline);
 
-    public IEnumerable<LogEntry> Parse(string filePath)
+    public IEnumerable<LogEntry> Parse(string filePath, int fileId)
     {
         var entries = new List<LogEntry>();
 
@@ -24,7 +24,8 @@ public class LogParserService : ILogParserService
                 {
                     Date = DateTime.Parse(match.Groups["date"].Value),
                     Level = match.Groups["level"].Value,
-                    Message = match.Groups["message"].Value
+                    Message = match.Groups["message"].Value,
+                    LogFileId = fileId
                 });
             }
         }

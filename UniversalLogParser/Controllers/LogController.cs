@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using UniversalLogParser.Data;
+using UniversalLogParser.Models;
 using UniversalLogParser.Services;
 
 namespace UniversalLogParser.Controllers;
@@ -15,13 +16,17 @@ public class LogController : Controller
         _parser = parser;
     }
     [HttpGet]
-    public IActionResult Index()
+    public IActionResult Index(int id)
     {
-        var logs = _context.LogEntries.OrderByDescending(x => x.Date).Take(100).ToList();
+        var logs = _context.LogEntries
+            .Where(x => x.LogFileId == id)
+            .OrderByDescending(x => x.Date)
+            .Take(100)
+            .ToList();
         return View(logs);
     }
     [HttpPost]
-    public IActionResult Upload(IFormFile file)
+    public async Task<IActionResult> Upload(IFormFile file)
     {
         if (file != null && file.Length > 0)
         {
@@ -31,11 +36,24 @@ public class LogController : Controller
                 file.CopyTo(stream);
             }
 
-            var entries = _parser.Parse(tempPath);
+            int fileId = await CreateLogFileOnUploading(file);
+            var entries = _parser.Parse(tempPath, fileId);
             _context.LogEntries.AddRange(entries);
             _context.SaveChanges();
         }
 
         return RedirectToAction("Index");
+    }
+
+    protected async virtual Task<int> CreateLogFileOnUploading(IFormFile file)
+    {
+        var logFile = new LogFile {
+            FileName = file.FileName,
+            UploadedOn = DateTime.UtcNow
+        };
+        _context.LogFiles.Add(logFile);
+        await _context.SaveChangesAsync();
+        
+        return logFile.Id;
     }
 }

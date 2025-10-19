@@ -1,5 +1,11 @@
 @model IEnumerable<LogFileListViewModel>
 
+
+<form asp-action="Upload" asp-controller="Log" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" />
+    <button type="submit">Upload</button>
+</form>
+
 <h2>Uploaded log files</h2>
 
 <table class="table">
@@ -19,7 +25,7 @@
             <td>@file.UploadedOn</td>
             <td>@file.Count</td>
             <td>
-                <a asp-controller="LogFiles" asp-action="Details" asp-route-id="@file.Id" class="btn btn-sm btn-primary">
+                <a asp-controller="Log" asp-action="Index" asp-route-id="@file.Id" class="btn btn-sm btn-primary">
                     Open
                 </a>
             </td>
