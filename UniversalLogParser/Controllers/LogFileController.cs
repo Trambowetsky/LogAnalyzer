@@ -38,4 +38,19 @@ public class LogFilesController : Controller
 
         return View(file);
     }
+
+    public async Task<IActionResult> Delete(int id)
+    {
+        var file = await _context.LogFiles.Include(f => f.Entries)
+            .FirstOrDefaultAsync(f => f.Id == id);
+
+        if (file == null)
+            return NotFound();
+
+        _context.LogEntries.RemoveRange(file.Entries);
+        _context.LogFiles.Remove(file);
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction(nameof(Index));
+    }
 }
