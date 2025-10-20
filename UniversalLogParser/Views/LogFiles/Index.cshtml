@@ -1,7 +1,7 @@
 @model IEnumerable<LogFileListViewModel>
 
 
-<form asp-action="Upload" asp-controller="Log" method="post" enctype="multipart/form-data">
+<form asp-action="Upload" asp-controller="LogFiles" method="post" enctype="multipart/form-data">
     <input type="file" name="file" />
     <button type="submit">Upload</button>
 </form>
@@ -14,21 +14,21 @@
         <th>File name</th>
         <th>Uploaded on</th>
         <th>Rows</th>
-        <th></th>
+        <th>Actions</th>
     </tr>
     </thead>
     <tbody>
     @foreach (var file in Model)
     {
         <tr>
-            <td>@file.FileName</td>
+            <td><a asp-controller="Log"
+                   asp-action="Index"
+                   asp-route-id="@file.Id"
+                   class="text-decoration-none">
+                @file.FileName
+            </a></td>
             <td>@file.UploadedOn</td>
             <td>@file.Count</td>
-            <td>
-                <a asp-controller="Log" asp-action="Index" asp-route-id="@file.Id" class="btn btn-sm btn-primary">
-                    Open
-                </a>
-            </td>
             <td>
                 <a asp-controller="LogFiles" asp-action="Delete" asp-route-id="@file.Id" class="btn btn-sm btn-danger">
                     Remove
