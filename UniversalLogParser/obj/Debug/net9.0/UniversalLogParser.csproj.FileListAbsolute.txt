@@ -32,7 +32,6 @@
 /Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/obj/Debug/net9.0/scopedcss/projectbundle/UniversalLogParser.bundle.scp.css
 /Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/obj/Debug/net9.0/compressed/de5ku2emya-lugek5hnai.gz
 /Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/obj/Debug/net9.0/compressed/9sc0eoa160-61n19gt1b8.gz
-/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/obj/Debug/net9.0/compressed/0lhxgm11bc-fr7q2aak1r.gz
 /Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/obj/Debug/net9.0/compressed/u26cvidon7-bqjiyaj88i.gz
 /Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/obj/Debug/net9.0/compressed/xf240j7fxd-c2jlpeoesf.gz
 /Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/obj/Debug/net9.0/compressed/5mhptzn4t4-erw9l3u2r3.gz
@@ -220,3 +219,4 @@
 /Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/bin/Debug/net9.0/zh-Hans/Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 /Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/bin/Debug/net9.0/zh-Hant/Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 /Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/obj/Debug/net9.0/UniversalLogParser.sourcelink.json
+/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/obj/Debug/net9.0/compressed/0lhxgm11bc-fqgiuix6dt.gz

@@ -1,23 +1,90 @@
 @model IEnumerable<UniversalLogParser.Models.LogEntry>
 
-<h2>Log Entries</h2>
+<h2 class="mb-3">Log entries</h2>
 
-<table class="table">
-    <thead>
-    <tr>
-        <th>Date</th>
-        <th>Level</th>
-        <th>Message</th>
-    </tr>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex align-items-center gap-2">
+        <label class="fw-semibold me-2">Filter by level:</label>
+        <select id="levelFilter" class="form-select form-select-sm w-auto">
+            <option value="All" selected>All</option>
+            <option value="Info">Info</option>
+            <option value="Warning">Warning</option>
+            <option value="Error">Error</option>
+        </select>
+
+        <label class="fw-semibold ms-4 me-2">Sort by date:</label>
+        <select id="dateSort" class="form-select form-select-sm w-auto">
+            <option value="desc" selected>Newest first</option>
+            <option value="asc">Oldest first</option>
+        </select>
+    </div>
+
+    <a asp-controller="LogFiles" asp-action="Index" class="btn btn-outline-secondary btn-sm">
+        ← Back to files
+    </a>
+</div>
+
+<table class="table table-hover align-middle" id="logTable">
+    <thead class="table-light">
+        <tr>
+            <th>Date</th>
+            <th>Level</th>
+            <th>Message</th>
+        </tr>
     </thead>
     <tbody>
-    @foreach (var log in Model)
-    {
-        <tr>
-            <td>@log.Date</td>
-            <td>@log.Level</td>
-            <td>@log.Message</td>
-        </tr>
-    }
+        @foreach (var log in Model.OrderByDescending(x => x.Date))
+        {
+            <tr data-level="@log.Level">
+                <td>@log.Date.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                <td>
+                    @switch (log.Level?.ToLower())
+                    {
+                        case "error":
+                            <span class="badge bg-danger text-uppercase">Error</span>
+                            break;
+                        case "warn":
+                        case "warning":
+                            <span class="badge bg-warning text-dark text-uppercase">Warning</span>
+                            break;
+                        default:
+                            <span class="badge bg-info text-uppercase">Info</span>
+                            break;
+                    }
+                </td>
+                <td>@log.Message</td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<script>
+    const levelFilter = document.getElementById('levelFilter');
+    const dateSort = document.getElementById('dateSort');
+    const tableBody = document.querySelector('#logTable tbody');
+    const allRows = Array.from(tableBody.querySelectorAll('tr'));
+
+    levelFilter.addEventListener('change', filterAndSort);
+    dateSort.addEventListener('change', filterAndSort);
+
+    function filterAndSort() {
+        const level = levelFilter.value.toLowerCase();
+        const sortOrder = dateSort.value;
+        let rows = [...allRows];
+
+        // Фильтрация по уровню
+        if (level !== 'all') {
+            rows = rows.filter(r => r.dataset.level.toLowerCase() === level);
+        }
+
+        // Сортировка по дате
+        rows.sort((a, b) => {
+            const dateA = new Date(a.children[0].innerText);
+            const dateB = new Date(b.children[0].innerText);
+            return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+        });
+
+        tableBody.innerHTML = '';
+        rows.forEach(r => tableBody.appendChild(r));
+    }
+</script>

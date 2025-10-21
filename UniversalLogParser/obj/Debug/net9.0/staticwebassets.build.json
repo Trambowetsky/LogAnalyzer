@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "pjvENW65fvOC9ucapeMiegNTQdzzmLqEyhBzmLPBRXM=",
+  "Hash": "bhSrzqGvbWKM0ZBdYAAdXBY2V0PXUv+HORyx/caZZnI=",
   "Source": "UniversalLogParser",
   "BasePath": "_content/UniversalLogParser",
   "Mode": "Default",
@@ -38,12 +38,12 @@
       "OriginalItemSpec": "/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/wwwroot/lib/jquery/dist/jquery.js"
     },
     {
-      "Identity": "/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/obj/Debug/net9.0/compressed/0lhxgm11bc-fr7q2aak1r.gz",
+      "Identity": "/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/obj/Debug/net9.0/compressed/0lhxgm11bc-fqgiuix6dt.gz",
       "SourceId": "UniversalLogParser",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/obj/Debug/net9.0/compressed/",
       "BasePath": "_content/UniversalLogParser",
-      "RelativePath": "js/site#[.{fingerprint=fr7q2aak1r}]?.js.gz",
+      "RelativePath": "js/site#[.{fingerprint=fqgiuix6dt}]?.js.gz",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Alternative",
@@ -52,8 +52,8 @@
       "RelatedAsset": "/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/wwwroot/js/site.js",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "vcryxhm7wu",
-      "Integrity": "AXztSpoe10GTxIpe7DqcvjAoPi8BndznaaLKrv6dOdI=",
+      "Fingerprint": "6bxlfj59x6",
+      "Integrity": "4sZufnZFIXFRtOD9P42JyxLHsK85c6op6ZEqufushII=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/wwwroot/js/site.js"
@@ -1459,8 +1459,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "fr7q2aak1r",
-      "Integrity": "y/Ngd8W21UpuCUhEqGbUKDEqFnNfTjAfb24GhJJGUyM=",
+      "Fingerprint": "fqgiuix6dt",
+      "Integrity": "yeSareBfTE7p9SYmyyw6ZEOUkzUQW6yTds1O4gHIMlQ=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/js/site.js"
@@ -3324,13 +3324,13 @@
       ]
     },
     {
-      "Route": "js/site.fr7q2aak1r.js",
-      "AssetFile": "/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/obj/Debug/net9.0/compressed/0lhxgm11bc-fr7q2aak1r.gz",
+      "Route": "js/site.fqgiuix6dt.js",
+      "AssetFile": "/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/obj/Debug/net9.0/compressed/0lhxgm11bc-fqgiuix6dt.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.005376344086"
+          "Quality": "0.002164502165"
         }
       ],
       "ResponseHeaders": [
@@ -3340,15 +3340,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "185"
+          "Value": "461"
         },
         {
           "Name": "ETag",
-          "Value": "\"AXztSpoe10GTxIpe7DqcvjAoPi8BndznaaLKrv6dOdI=\""
+          "Value": "\"4sZufnZFIXFRtOD9P42JyxLHsK85c6op6ZEqufushII=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 08 Oct 2025 20:42:41 GMT"
+          "Value": "Tue, 21 Oct 2025 20:45:52 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3368,13 +3368,13 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"y/Ngd8W21UpuCUhEqGbUKDEqFnNfTjAfb24GhJJGUyM=\""
+          "Value": "W/\"yeSareBfTE7p9SYmyyw6ZEOUkzUQW6yTds1O4gHIMlQ=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "fr7q2aak1r"
+          "Value": "fqgiuix6dt"
         },
         {
           "Name": "label",
@@ -3382,12 +3382,12 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-y/Ngd8W21UpuCUhEqGbUKDEqFnNfTjAfb24GhJJGUyM="
+          "Value": "sha256-yeSareBfTE7p9SYmyyw6ZEOUkzUQW6yTds1O4gHIMlQ="
         }
       ]
     },
     {
-      "Route": "js/site.fr7q2aak1r.js",
+      "Route": "js/site.fqgiuix6dt.js",
       "AssetFile": "/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/wwwroot/js/site.js",
       "Selectors": [],
       "ResponseHeaders": [
@@ -3397,7 +3397,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "227"
+          "Value": "1163"
         },
         {
           "Name": "Content-Type",
@@ -3405,11 +3405,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"y/Ngd8W21UpuCUhEqGbUKDEqFnNfTjAfb24GhJJGUyM=\""
+          "Value": "\"yeSareBfTE7p9SYmyyw6ZEOUkzUQW6yTds1O4gHIMlQ=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 08 Oct 2025 20:42:41 GMT"
+          "Value": "Tue, 21 Oct 2025 20:45:52 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3419,7 +3419,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "fr7q2aak1r"
+          "Value": "fqgiuix6dt"
         },
         {
           "Name": "label",
@@ -3427,13 +3427,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-y/Ngd8W21UpuCUhEqGbUKDEqFnNfTjAfb24GhJJGUyM="
+          "Value": "sha256-yeSareBfTE7p9SYmyyw6ZEOUkzUQW6yTds1O4gHIMlQ="
         }
       ]
     },
     {
-      "Route": "js/site.fr7q2aak1r.js.gz",
-      "AssetFile": "/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/obj/Debug/net9.0/compressed/0lhxgm11bc-fr7q2aak1r.gz",
+      "Route": "js/site.fqgiuix6dt.js.gz",
+      "AssetFile": "/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/obj/Debug/net9.0/compressed/0lhxgm11bc-fqgiuix6dt.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -3442,7 +3442,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "185"
+          "Value": "461"
         },
         {
           "Name": "Content-Type",
@@ -3450,11 +3450,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"AXztSpoe10GTxIpe7DqcvjAoPi8BndznaaLKrv6dOdI=\""
+          "Value": "\"4sZufnZFIXFRtOD9P42JyxLHsK85c6op6ZEqufushII=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 08 Oct 2025 20:42:41 GMT"
+          "Value": "Tue, 21 Oct 2025 20:45:52 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3472,7 +3472,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "fr7q2aak1r"
+          "Value": "fqgiuix6dt"
         },
         {
           "Name": "label",
@@ -3480,18 +3480,18 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-AXztSpoe10GTxIpe7DqcvjAoPi8BndznaaLKrv6dOdI="
+          "Value": "sha256-4sZufnZFIXFRtOD9P42JyxLHsK85c6op6ZEqufushII="
         }
       ]
     },
     {
       "Route": "js/site.js",
-      "AssetFile": "/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/obj/Debug/net9.0/compressed/0lhxgm11bc-fr7q2aak1r.gz",
+      "AssetFile": "/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/obj/Debug/net9.0/compressed/0lhxgm11bc-fqgiuix6dt.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.005376344086"
+          "Quality": "0.002164502165"
         }
       ],
       "ResponseHeaders": [
@@ -3501,15 +3501,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "185"
+          "Value": "461"
         },
         {
           "Name": "ETag",
-          "Value": "\"AXztSpoe10GTxIpe7DqcvjAoPi8BndznaaLKrv6dOdI=\""
+          "Value": "\"4sZufnZFIXFRtOD9P42JyxLHsK85c6op6ZEqufushII=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 08 Oct 2025 20:42:41 GMT"
+          "Value": "Tue, 21 Oct 2025 20:45:52 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3529,13 +3529,13 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"y/Ngd8W21UpuCUhEqGbUKDEqFnNfTjAfb24GhJJGUyM=\""
+          "Value": "W/\"yeSareBfTE7p9SYmyyw6ZEOUkzUQW6yTds1O4gHIMlQ=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-y/Ngd8W21UpuCUhEqGbUKDEqFnNfTjAfb24GhJJGUyM="
+          "Value": "sha256-yeSareBfTE7p9SYmyyw6ZEOUkzUQW6yTds1O4gHIMlQ="
         }
       ]
     },
@@ -3550,7 +3550,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "227"
+          "Value": "1163"
         },
         {
           "Name": "Content-Type",
@@ -3558,11 +3558,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"y/Ngd8W21UpuCUhEqGbUKDEqFnNfTjAfb24GhJJGUyM=\""
+          "Value": "\"yeSareBfTE7p9SYmyyw6ZEOUkzUQW6yTds1O4gHIMlQ=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 08 Oct 2025 20:42:41 GMT"
+          "Value": "Tue, 21 Oct 2025 20:45:52 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3572,13 +3572,13 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-y/Ngd8W21UpuCUhEqGbUKDEqFnNfTjAfb24GhJJGUyM="
+          "Value": "sha256-yeSareBfTE7p9SYmyyw6ZEOUkzUQW6yTds1O4gHIMlQ="
         }
       ]
     },
     {
       "Route": "js/site.js.gz",
-      "AssetFile": "/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/obj/Debug/net9.0/compressed/0lhxgm11bc-fr7q2aak1r.gz",
+      "AssetFile": "/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/obj/Debug/net9.0/compressed/0lhxgm11bc-fqgiuix6dt.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -3587,7 +3587,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "185"
+          "Value": "461"
         },
         {
           "Name": "Content-Type",
@@ -3595,11 +3595,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"AXztSpoe10GTxIpe7DqcvjAoPi8BndznaaLKrv6dOdI=\""
+          "Value": "\"4sZufnZFIXFRtOD9P42JyxLHsK85c6op6ZEqufushII=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 08 Oct 2025 20:42:41 GMT"
+          "Value": "Tue, 21 Oct 2025 20:45:52 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3617,7 +3617,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-AXztSpoe10GTxIpe7DqcvjAoPi8BndznaaLKrv6dOdI="
+          "Value": "sha256-4sZufnZFIXFRtOD9P42JyxLHsK85c6op6ZEqufushII="
         }
       ]
     },
