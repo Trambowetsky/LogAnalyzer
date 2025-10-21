@@ -1,11 +1,5 @@
 @model IEnumerable<LogFileListViewModel>
 
-
-<form asp-action="Upload" asp-controller="LogFiles" method="post" enctype="multipart/form-data">
-    <input type="file" name="file" />
-    <button type="submit">Upload</button>
-</form>
-
 <h2>Uploaded log files</h2>
 
 <table class="table">

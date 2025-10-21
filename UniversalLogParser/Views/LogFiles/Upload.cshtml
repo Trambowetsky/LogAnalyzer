@@ -1,0 +1,70 @@
+@{
+    ViewData["Title"] = "Upload Logs";
+}
+
+<h2>Upload log file</h2>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<div id="drop-area" class="border border-primary rounded p-5 text-center bg-light" style="cursor: pointer;">
+    <h4>Drag & Drop file here</h4>
+    <p>or click to select</p>
+    <input type="file" id="fileInput" name="file" hidden />
+</div>
+
+<form id="uploadForm" asp-action="Upload" asp-controller="LogFiles" method="post" enctype="multipart/form-data">
+</form>
+
+<script>
+    const dropArea = document.getElementById('drop-area');
+    const fileInput = document.getElementById('fileInput');
+    const form = document.getElementById('uploadForm');
+
+    dropArea.addEventListener('click', () => fileInput.click());
+
+    dropArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropArea.classList.add('bg-primary', 'text-white');
+    });
+
+    dropArea.addEventListener('dragleave', () => {
+        dropArea.classList.remove('bg-primary', 'text-white');
+    });
+
+    dropArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropArea.classList.remove('bg-primary', 'text-white');
+        const file = e.dataTransfer.files[0];
+        uploadFile(file);
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        uploadFile(file);
+    });
+
+    function uploadFile(file) {
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        fetch('/LogFiles/Upload', {
+            method: 'POST',
+            body: formData
+        }).then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+            } else {
+                alert('Upload failed');
+            }
+        });
+    }
+</script>
