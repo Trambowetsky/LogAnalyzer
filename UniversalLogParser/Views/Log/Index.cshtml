@@ -7,9 +7,9 @@
         <label class="fw-semibold me-2">Filter by level:</label>
         <select id="levelFilter" class="form-select form-select-sm w-auto">
             <option value="All" selected>All</option>
-            <option value="Info">Info</option>
-            <option value="Warning">Warning</option>
-            <option value="Error">Error</option>
+            <option value="inf">Info</option>
+            <option value="wrn">Warning</option>
+            <option value="err">Error</option>
         </select>
 
         <label class="fw-semibold ms-4 me-2">Sort by date:</label>
@@ -25,7 +25,7 @@
 </div>
 
 <table class="table table-hover align-middle" id="logTable">
-    <thead class="table-light">
+    <thead class="table-dark">
         <tr>
             <th>Date</th>
             <th>Level</th>
@@ -40,11 +40,10 @@
                 <td>
                     @switch (log.Level?.ToLower())
                     {
-                        case "error":
+                        case "err":
                             <span class="badge bg-danger text-uppercase">Error</span>
                             break;
-                        case "warn":
-                        case "warning":
+                        case "wrn":
                             <span class="badge bg-warning text-dark text-uppercase">Warning</span>
                             break;
                         default:
@@ -71,13 +70,11 @@
         const level = levelFilter.value.toLowerCase();
         const sortOrder = dateSort.value;
         let rows = [...allRows];
-
-        // Фильтрация по уровню
+        
         if (level !== 'all') {
             rows = rows.filter(r => r.dataset.level.toLowerCase() === level);
         }
-
-        // Сортировка по дате
+        
         rows.sort((a, b) => {
             const dateA = new Date(a.children[0].innerText);
             const dateB = new Date(b.children[0].innerText);
