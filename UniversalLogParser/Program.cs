@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using UniversalLogParser.Data;
+using UniversalLogParser.Middleware;
 using UniversalLogParser.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,5 +33,5 @@ app.MapControllerRoute(
         pattern: "{controller=LogFiles}/{action=Index}/{id?}")
     .WithStaticAssets();
 
-
+app.UseMiddleware<RequestLoggingMiddleware>();
 app.Run();
