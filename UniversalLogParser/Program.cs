@@ -34,4 +34,6 @@ app.MapControllerRoute(
     .WithStaticAssets();
 
 app.UseMiddleware<RequestLoggingMiddleware>();
+app.UseMiddleware<RequestTimingMiddleware>();
+
 app.Run();
