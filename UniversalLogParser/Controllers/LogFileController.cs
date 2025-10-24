@@ -47,6 +47,7 @@ public class LogFilesController : Controller
     {
         return View();
     }
+
     [HttpPost]
     public async Task<IActionResult> Upload(IFormFile file)
     {

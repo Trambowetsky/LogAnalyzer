@@ -25,4 +25,9 @@ public class LogController : Controller
             .ToList();
         return View(logs);
     }
+    [HttpGet]
+    public IActionResult Stats()
+    {
+        return View();
+    }
 }

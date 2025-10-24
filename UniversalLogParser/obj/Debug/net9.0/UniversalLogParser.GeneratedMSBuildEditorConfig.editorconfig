@@ -32,6 +32,10 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTG9nL0luZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/Views/Log/Stats.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTG9nL1N0YXRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/Views/LogFiles/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTG9nRmlsZXMvSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
