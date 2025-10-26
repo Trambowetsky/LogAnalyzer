@@ -26,8 +26,29 @@ public class LogController : Controller
         return View(logs);
     }
     [HttpGet]
-    public IActionResult Stats()
+    public IActionResult Stats(int id)
     {
+        var file = _context.LogFiles.FirstOrDefault(f => f.Id == id);
+        if (file == null) return NotFound();
+
+        ViewBag.FileId = id;
+        ViewBag.FileName = file.FileName;
+
         return View();
+    }
+    [HttpGet]
+    public IActionResult GetStats(int id)
+    {
+        var stats = _context.LogEntries
+            .Where(e => e.LogFileId == id)
+            .GroupBy(e => e.Level)
+            .Select(g => new
+            {
+                Level = g.Key,
+                Count = g.Count()
+            })
+            .ToList();
+
+        return Json(stats);
     }
 }

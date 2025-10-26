@@ -1,5 +1,7 @@
 @model IEnumerable<UniversalLogParser.Models.LogEntry>
-
+@{
+    var logFileId = Model.FirstOrDefault()?.LogFileId ?? 0;
+}
 <h2 class="mb-3">Log entries</h2>
 
 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -22,7 +24,7 @@
     <a asp-controller="LogFiles" asp-action="Index" class="btn btn-outline-secondary btn-sm">
         ← Back to files
     </a>
-    <a asp-controller="Log" asp-action="Stats" class="btn btn-outline-secondary btn-sm">
+    <a asp-controller="Log" asp-action="Stats" asp-route-id="@logFileId" class="btn btn-outline-secondary btn-sm">
         Statistics
     </a>
 </div>
