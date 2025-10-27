@@ -37,7 +37,7 @@ public class LogController : Controller
         return View();
     }
     [HttpGet]
-    public IActionResult GetStats(int fileId)
+    public IActionResult GetLevelStats(int fileId)
     {
         var stats = _context.LogEntries
             .Where(e => e.LogFileId == fileId)
@@ -50,5 +50,22 @@ public class LogController : Controller
             .ToList();
 
         return Json(stats);
+    }
+    [HttpGet]
+    public IActionResult GetPeriodStats(int fileId)
+    {
+        var activity = _context.LogEntries
+            .Where(e => e.LogFileId == fileId)
+            .AsEnumerable()
+            .GroupBy(e => e.Date.ToString("HH:mm"))
+            .Select(g => new
+            {
+                Time = g.Key,
+                Count = g.Count()
+            })
+            .OrderBy(t => t.Time)
+            .ToList();
+
+        return Json(activity);
     }
 }

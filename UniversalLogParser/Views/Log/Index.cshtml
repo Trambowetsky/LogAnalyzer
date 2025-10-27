@@ -20,13 +20,13 @@
             <option value="desc" selected>Newest first</option>
             <option value="asc">Oldest first</option>
         </select>
+        <a asp-controller="Log" asp-action="Stats" asp-route-id="@logFileId" class="btn btn-outline-secondary btn-sm">
+            Statistics
+        </a>
     </div>
 
     <a asp-controller="LogFiles" asp-action="Index" class="btn btn-outline-secondary btn-sm">
         ← Back to files
-    </a>
-    <a asp-controller="Log" asp-action="Stats" asp-route-id="@logFileId" class="btn btn-outline-secondary btn-sm">
-        Statistics
     </a>
 </div>
 

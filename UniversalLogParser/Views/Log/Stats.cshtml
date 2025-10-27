@@ -1,18 +1,27 @@
+@using System.Text.Json
 @{
 ViewData["Title"] = "Statistics for " + ViewBag.FileName;
 }
 
 <h2>@ViewData["Title"]</h2>
 
-<div style="width: 700px; height: 400px;">
-    <canvas id="logChart"></canvas>
+<a asp-controller="Log" asp-action="Index" asp-route-id="@ViewBag.FileId" class="btn btn-outline-secondary btn-sm">
+    ← Back to entries
+</a>
+<div style="display: flex; justify-content: center; align-items: flex-start; gap: 40px; margin-top: 40px;">
+    <div style="width: 600px; height: 400px;">
+        <canvas id="logChart"></canvas>
+    </div>
+    <div style="width: 600px; height: 400px;">
+        <canvas id="logPeriodChart"></canvas>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const fileId = @ViewBag.FileId;
 
-    fetch(`/Log/GetStats?fileId=${fileId}`)
+    fetch(`/Log/GetLevelStats?fileId=${fileId}`)
         .then(res => res.json())
         .then(data => {
             const ctx = document.getElementById('logChart').getContext('2d');
@@ -28,6 +37,27 @@ ViewData["Title"] = "Statistics for " + ViewBag.FileName;
                 },
                 options: {
                     scales: { y: { beginAtZero: true } }
+                }
+            });
+        });
+
+    fetch(`/Log/GetPeriodStats?fileId=${fileId}`)
+        .then(res => res.json())
+        .then(data => {
+            const ctx = document.getElementById('logPeriodChart').getContext('2d');
+            const labels = data.map(x => x.time);
+            const counts = data.map(x => x.count);
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Log activity over time',
+                        data: counts,
+                        borderColor: '#36A2EB',
+                        fill: false,
+                        tension: 0.2
+                    }]
                 }
             });
         });
