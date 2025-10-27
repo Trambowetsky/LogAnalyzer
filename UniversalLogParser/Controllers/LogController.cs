@@ -91,7 +91,23 @@ public class LogController : Controller
 
         return Json(categories);
     }
+    [HttpGet]
+    public IActionResult GetHeatmapData(int fileId)
+    {
+        var data = _context.LogEntries
+            .Where(e => e.LogFileId == fileId)
+            .AsEnumerable()
+            .GroupBy(e => new { Hour = e.Date.Hour, e.Level })
+            .Select(g => new
+            {
+                Hour = g.Key.Hour,
+                Level = g.Key.Level,
+                Count = g.Count()
+            })
+            .ToList();
 
+        return Json(data);
+    }
     private static bool ContainsAny(string? text, params string[] keywords)
     {
         if (string.IsNullOrEmpty(text)) return false;
