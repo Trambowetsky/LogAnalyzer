@@ -68,4 +68,33 @@ public class LogController : Controller
 
         return Json(activity);
     }
+    [HttpGet]
+    public IActionResult GetCategoryStats(int fileId)
+    {
+        var entries = _context.LogEntries
+            .Where(e => e.LogFileId == fileId)
+            .Select(e => e.Message)
+            .AsEnumerable();
+
+        var categories = new Dictionary<string, int>
+        {
+            ["Database"] = entries.Count(m => ContainsAny(m, "database", "sql", "query", "db")),
+            ["Network"] = entries.Count(m => ContainsAny(m, "timeout", "connection", "network", "http")),
+            ["UI"] = entries.Count(m => ContainsAny(m, "button", "window", "ui", "render")),
+            ["File"] = entries.Count(m => ContainsAny(m, "file", "path", "directory", "read", "write")),
+            ["Other"] = 0
+        };
+
+        int total = entries.Count();
+        int categorized = categories.Sum(x => x.Value);
+        categories["Other"] = total - categorized;
+
+        return Json(categories);
+    }
+
+    private static bool ContainsAny(string? text, params string[] keywords)
+    {
+        if (string.IsNullOrEmpty(text)) return false;
+        return keywords.Any(k => text.Contains(k, StringComparison.OrdinalIgnoreCase));
+    }
 }

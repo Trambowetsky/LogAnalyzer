@@ -1,4 +1,3 @@
-@using System.Text.Json
 @{
 ViewData["Title"] = "Statistics for " + ViewBag.FileName;
 }
@@ -15,6 +14,9 @@ ViewData["Title"] = "Statistics for " + ViewBag.FileName;
     <div style="width: 600px; height: 400px;">
         <canvas id="logPeriodChart"></canvas>
     </div>
+</div>
+<div class="chart-box" style="width: 400px; height: 400px; margin: auto;">
+    <canvas id="logCategoryChart"></canvas>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -58,6 +60,41 @@ ViewData["Title"] = "Statistics for " + ViewBag.FileName;
                         fill: false,
                         tension: 0.2
                     }]
+                }
+            });
+        });
+    fetch(`/Log/GetCategoryStats?fileId=${fileId}`)
+        .then(res => res.json())
+        .then(data => {
+            const ctx = document.getElementById('logCategoryChart').getContext('2d');
+            const labels = Object.keys(data);
+            const counts = Object.values(data);
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Message Type Distribution',
+                        data: counts,
+                        backgroundColor: [
+                            '#36A2EB', // Database
+                            '#FFCE56', // Network
+                            '#FF6384', // UI
+                            '#4BC0C0', // File
+                            '#AAAAAA'  // Other
+                        ]
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: { display: false },
+                        title: {
+                            display: true,
+                            text: 'Message type ratio',
+                            color: '#fff'
+                        }
+                    }
                 }
             });
         });
