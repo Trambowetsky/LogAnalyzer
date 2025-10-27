@@ -37,10 +37,10 @@ public class LogController : Controller
         return View();
     }
     [HttpGet]
-    public IActionResult GetStats(int id)
+    public IActionResult GetStats(int fileId)
     {
         var stats = _context.LogEntries
-            .Where(e => e.LogFileId == id)
+            .Where(e => e.LogFileId == fileId)
             .GroupBy(e => e.Level)
             .Select(g => new
             {
