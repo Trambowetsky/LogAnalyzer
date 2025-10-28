@@ -8,18 +8,18 @@ ViewData["Title"] = "Statistics for " + ViewBag.FileName;
     ← Back to entries
 </a>
 <div style="display: flex; justify-content: center; align-items: flex-start; gap: 40px; margin-top: 40px;">
-    <div style="width: 600px; height: 400px;">
+    <div style="width: 600px; height: 300px;">
         <canvas id="logChart"></canvas>
     </div>
-    <div style="width: 600px; height: 400px;">
+    <div style="width: 600px; height: 300px;">
         <canvas id="logPeriodChart"></canvas>
     </div>
 </div>
 <div style="display: flex; justify-content: center; align-items: flex-start; gap: 40px; margin-top: 40px;">
-    <div class="chart-box" style="width: 400px; height: 400px; margin: auto;">
+    <div class="chart-box" style="width: 300px; height: 300px; margin: auto;">
         <canvas id="logCategoryChart"></canvas>
     </div>
-    <div class="chart-box" style="width: 600px; height: 400px; margin: auto;">
+    <div class="chart-box" style="width: 600px; height: 300px; margin: auto;">
         <canvas id="logHeatmap"></canvas>
     </div>
 </div>
@@ -110,67 +110,51 @@ ViewData["Title"] = "Statistics for " + ViewBag.FileName;
         .then(data => {
             const ctx = document.getElementById('logHeatmap').getContext('2d');
 
-
-            const levels = [...new Set(data.map(d => d.level))];
-            const hours = Array.from({ length: 24 }, (_, i) => i);
-            
-            const matrixData = data.map(d => ({
-                x: d.hour,
-                y: levels.indexOf(d.level),
-                v: d.count
-            }));
+            const hours = [...new Set(data.map(d => d.x))];
+            const levels = [...new Set(data.map(d => d.y))];
 
             new Chart(ctx, {
                 type: 'matrix',
                 data: {
                     datasets: [{
-                        label: 'Activity heatmap',
-                        data: matrixData,
-                        backgroundColor(ctx) {
-                            const value = ctx.dataset.data[ctx.dataIndex].v;
-                            return value > 10 ? '#FF3B30' :
-                                value > 5  ? '#FF9500' :
-                                    value > 2  ? '#FFCC00' :
-                                        '#34C759';
+                        label: 'Log Heatmap',
+                        data: data,
+                        backgroundColor: c => {
+                            const value = c.raw.v;
+                            const alpha = Math.min(0.8, 0.2 + value / 10);
+                            return `rgba(75, 192, 192, ${alpha})`;
                         },
-                        width: ({ chart }) => (chart.width / 24) - 2,
-                        height: ({ chart }) => (chart.height / levels.length) - 2
+                        width: ({chart}) => (chart.width / hours.length) - 45,
+                        height: ({chart}) => (chart.height / levels.length) - 45,
                     }]
                 },
                 options: {
+                    scales: {
+                        x: {
+                            type: 'category',
+                            labels: hours,
+                            title: { display: true, text: 'Hours' },
+                            grid: { display: false }
+                        },
+                        y: {
+                            type: 'category',
+                            labels: levels,
+                            title: { display: true, text: 'Log Levels' },
+                            grid: { display: false }
+                        }
+                    },
                     plugins: {
                         legend: { display: false },
                         title: {
                             display: true,
                             text: 'Log activity heatmap',
                             color: '#fff',
-                            font: { size: 15 }
+                            font: { size: 12, weight: 'bold' }
                         },
                         tooltip: {
                             callbacks: {
-                                title: ctx => `Hour: ${ctx[0].raw.x}:00`,
-                                label: ctx => `${levels[ctx[0].raw.y]} — ${ctx[0].raw.v} events`
+                                label: ctx => `Count: ${ctx.raw.v}`
                             }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            type: 'linear',
-                            position: 'bottom',
-                            ticks: {
-                                stepSize: 1,
-                                color: '#fff',
-                                callback: v => v + ':00'
-                            },
-                            title: { display: true, text: 'Hours', color: '#fff' },
-                            grid: { color: 'rgba(255,255,255,0.1)' }
-                        },
-                        y: {
-                            type: 'category',
-                            labels: levels,
-                            title: { display: true, text: 'Log levels', color: '#fff' },
-                            ticks: { color: '#fff' },
-                            grid: { color: 'rgba(255,255,255,0.1)' }
                         }
                     }
                 }

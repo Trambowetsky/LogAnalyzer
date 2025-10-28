@@ -94,15 +94,30 @@ public class LogController : Controller
     [HttpGet]
     public IActionResult GetHeatmapData(int fileId)
     {
-        var data = _context.LogEntries
+        var entries = _context.LogEntries
             .Where(e => e.LogFileId == fileId)
-            .AsEnumerable()
-            .GroupBy(e => new { Hour = e.Date.Hour, e.Level })
+            .ToList();
+
+        if (!entries.Any())
+            return Json(Array.Empty<object>());
+
+        
+        var minDate = entries.Min(e => e.Date);
+        var maxDate = entries.Max(e => e.Date);
+        var totalMinutes = (maxDate - minDate).TotalMinutes;
+
+        string format =
+            totalMinutes <= 180 ? "HH:mm" : 
+            totalMinutes <= 1440 ? "HH" :   
+            "MM-dd";                        
+
+        var data = entries
+            .GroupBy(e => new { TimeKey = e.Date.ToString(format), e.Level })
             .Select(g => new
             {
-                Hour = g.Key.Hour,
-                Level = g.Key.Level,
-                Count = g.Count()
+                x = g.Key.TimeKey,
+                y = g.Key.Level,
+                v = g.Count()
             })
             .ToList();
 
