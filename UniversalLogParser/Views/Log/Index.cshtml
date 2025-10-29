@@ -100,5 +100,24 @@
         rows.forEach(r => tableBody.appendChild(r));
     }
 
-   
+    document.getElementById("exportExcelBtn").addEventListener("click", () => {
+        const selectedIds = Array.from(document.querySelectorAll(".row-checkbox:checked"))
+            .map(cb => parseInt(cb.dataset.id));
+
+        const fileId = @ViewBag.FileId; // или через ViewBag/FileId
+        fetch(`/Log/ExportToExcel?fileId=${fileId}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(selectedIds)
+        })
+            .then(res => res.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "logs_export.xlsx";
+                a.click();
+                URL.revokeObjectURL(url);
+            });
+    });
 </script>

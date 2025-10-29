@@ -23,6 +23,8 @@ public class LogController : Controller
             .OrderByDescending(x => x.Date)
             .Take(100)
             .ToList();
+
+        ViewBag.FileId = id;
         return View(logs);
     }
     [HttpGet]
