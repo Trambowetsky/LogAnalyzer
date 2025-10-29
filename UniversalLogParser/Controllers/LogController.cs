@@ -123,6 +123,54 @@ public class LogController : Controller
 
         return Json(data);
     }
+    [HttpPost]
+    public IActionResult ExportToExcel(int fileId, [FromBody] List<int>? selectedIds)
+    {
+        var logsQuery = _context.LogEntries.Where(e => e.LogFileId == fileId);
+
+        if (selectedIds != null && selectedIds.Any())
+        {
+            logsQuery = logsQuery.Where(e => selectedIds.Contains(e.Id));
+        }
+
+        var logs = logsQuery
+            .OrderByDescending(e => e.Date)
+            .Select(e => new
+            {
+                e.Date,
+                e.Level,
+                e.Message
+            })
+            .ToList();
+
+        using var package = new OfficeOpenXml.ExcelPackage();
+        var ws = package.Workbook.Worksheets.Add("Logs");
+        
+        ws.Cells[1, 1].Value = "Date";
+        ws.Cells[1, 2].Value = "Level";
+        ws.Cells[1, 3].Value = "Message";
+        
+        for (int i = 0; i < logs.Count; i++)
+        {
+            var log = logs[i];
+            ws.Cells[i + 2, 1].Value = log.Date.ToString("yyyy-MM-dd HH:mm:ss");
+            ws.Cells[i + 2, 2].Value = log.Level;
+            ws.Cells[i + 2, 3].Value = log.Message;
+        }
+
+        using (var range = ws.Cells[1, 1, 1, 3])
+        {
+            range.Style.Font.Bold = true;
+            range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+            range.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+        }
+        ws.Cells.AutoFitColumns();
+
+        var stream = new MemoryStream(package.GetAsByteArray());
+        return File(stream, 
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
+            $"log_{fileId}_{DateTime.Now:yyyyMMdd_HHmm}.xlsx");
+    }
     private static bool ContainsAny(string? text, params string[] keywords)
     {
         if (string.IsNullOrEmpty(text)) return false;

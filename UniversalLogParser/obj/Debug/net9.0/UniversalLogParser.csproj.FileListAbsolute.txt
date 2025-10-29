@@ -220,3 +220,17 @@
 /Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/bin/Debug/net9.0/zh-Hant/Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 /Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/obj/Debug/net9.0/UniversalLogParser.sourcelink.json
 /Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/obj/Debug/net9.0/compressed/0lhxgm11bc-fqgiuix6dt.gz
+/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/bin/Debug/net9.0/EPPlus.dll
+/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/bin/Debug/net9.0/EPPlus.Interfaces.dll
+/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/bin/Debug/net9.0/Microsoft.Extensions.Configuration.dll
+/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/bin/Debug/net9.0/Microsoft.Extensions.Configuration.FileExtensions.dll
+/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/bin/Debug/net9.0/Microsoft.Extensions.Configuration.Json.dll
+/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/bin/Debug/net9.0/Microsoft.Extensions.FileProviders.Abstractions.dll
+/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/bin/Debug/net9.0/Microsoft.Extensions.FileProviders.Physical.dll
+/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/bin/Debug/net9.0/Microsoft.Extensions.FileSystemGlobbing.dll
+/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/bin/Debug/net9.0/Microsoft.IO.RecyclableMemoryStream.dll
+/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/bin/Debug/net9.0/System.Security.Cryptography.Pkcs.dll
+/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/bin/Debug/net9.0/System.Security.Cryptography.Xml.dll
+/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/bin/Debug/net9.0/System.Text.Encoding.CodePages.dll
+/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/bin/Debug/net9.0/runtimes/win/lib/net9.0/System.Security.Cryptography.Pkcs.dll
+/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/bin/Debug/net9.0/runtimes/win/lib/net9.0/System.Text.Encoding.CodePages.dll

@@ -23,6 +23,9 @@
         <a asp-controller="Log" asp-action="Stats" asp-route-id="@logFileId" class="btn btn-outline-secondary btn-sm">
             Statistics
         </a>
+        <button id="exportExcelBtn" class="btn btn-outline-secondary btn-sm">
+            Export to Excel
+        </button>
     </div>
 
     <a asp-controller="LogFiles" asp-action="Index" class="btn btn-outline-secondary btn-sm">
@@ -32,16 +35,19 @@
 
 <table class="table table-hover align-middle" id="logTable">
     <thead class="table-dark">
-        <tr>
-            <th>Date</th>
-            <th>Level</th>
-            <th>Message</th>
-        </tr>
+    <tr>
+        <th></th>
+        <th>Date</th>
+        <th>Level</th>
+        <th>Message</th>
+    </tr>
     </thead>
     <tbody>
         @foreach (var log in Model.OrderByDescending(x => x.Date))
         {
+            
             <tr data-level="@log.Level">
+                <td><input type="checkbox" class="row-checkbox" data-id="@log.Id" /></td>
                 <td>@log.Date.ToString("yyyy-MM-dd HH:mm:ss")</td>
                 <td>
                     @switch (log.Level?.ToLower())
@@ -93,4 +99,6 @@
         tableBody.innerHTML = '';
         rows.forEach(r => tableBody.appendChild(r));
     }
+
+   
 </script>
