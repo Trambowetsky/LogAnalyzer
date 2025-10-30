@@ -13,6 +13,10 @@
       "PackagePath": "staticwebassets/favicon.ico"
     },
     {
+      "Id": "/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/wwwroot/js/indexpage.js",
+      "PackagePath": "staticwebassets/js/indexpage.js"
+    },
+    {
       "Id": "/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/wwwroot/js/site.js",
       "PackagePath": "staticwebassets/js/site.js"
     },

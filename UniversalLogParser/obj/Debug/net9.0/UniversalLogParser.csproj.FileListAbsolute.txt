@@ -228,3 +228,4 @@
 /Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/bin/Debug/net9.0/RBush.dll
 /Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/bin/Debug/net9.0/SixLabors.Fonts.dll
 /Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/bin/Debug/net9.0/System.IO.Packaging.dll
+/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/obj/Debug/net9.0/compressed/4xbj0hkxew-5ipweew5fc.gz

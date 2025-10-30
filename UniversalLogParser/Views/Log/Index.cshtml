@@ -17,8 +17,8 @@
 
         <label class="fw-semibold ms-4 me-2">Sort by date:</label>
         <select id="dateSort" class="form-select form-select-sm w-auto">
-            <option value="desc" selected>Newest first</option>
-            <option value="asc">Oldest first</option>
+            <option value="desc">Newest first</option>
+            <option value="asc" selected>Oldest first</option>
         </select>
         <a asp-controller="Log" asp-action="Stats" asp-route-id="@logFileId" class="btn btn-outline-secondary btn-sm">
             Statistics
@@ -71,44 +71,107 @@
         }
     </tbody>
 </table>
+<nav aria-label="Pagination">
+    <ul id="pagination" class="pagination justify-content-center mt-3"></ul>
+</nav>
 
 <script>
     const levelFilter = document.getElementById('levelFilter');
     const dateSort = document.getElementById('dateSort');
     const tableBody = document.querySelector('#logTable tbody');
+    const pagination = document.getElementById('pagination');
     const allRows = Array.from(tableBody.querySelectorAll('tr'));
+    const rowsPerPage = 20;
+    let currentPage = 1;
 
-    levelFilter.addEventListener('change', filterAndSort);
-    dateSort.addEventListener('change', filterAndSort);
+    const selectedIds = new Set();
 
-    function filterAndSort() {
+    function filterSortPaginate() {
         const level = levelFilter.value.toLowerCase();
         const sortOrder = dateSort.value;
+
         let rows = [...allRows];
-        
+
+
         if (level !== 'all') {
             rows = rows.filter(r => r.dataset.level.toLowerCase() === level);
         }
-        
+
+
         rows.sort((a, b) => {
-            const dateA = new Date(a.children[0].innerText);
-            const dateB = new Date(b.children[0].innerText);
+            const dateA = new Date(a.children[1].innerText);
+            const dateB = new Date(b.children[1].innerText);
             return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
         });
 
+
+        const totalPages = Math.ceil(rows.length / rowsPerPage);
+        if (currentPage > totalPages) currentPage = totalPages || 1;
+
+        const start = (currentPage - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        const paginatedRows = rows.slice(start, end);
+        
         tableBody.innerHTML = '';
-        rows.forEach(r => tableBody.appendChild(r));
+        paginatedRows.forEach(r => {
+            const checkbox = r.querySelector('.row-checkbox');
+            checkbox.checked = selectedIds.has(parseInt(checkbox.dataset.id));
+            tableBody.appendChild(r);
+        });
+
+        renderPagination(totalPages);
     }
+    
+    function renderPagination(totalPages) {
+        pagination.innerHTML = '';
 
+        if (totalPages <= 1) return;
+
+        for (let i = 1; i <= totalPages; i++) {
+            const li = document.createElement('li');
+            li.classList.add('page-item');
+            if (i === currentPage) li.classList.add('active');
+
+            const a = document.createElement('a');
+            a.classList.add('page-link');
+            a.textContent = i;
+            a.href = '#';
+            a.addEventListener('click', (e) => {
+                e.preventDefault();
+                currentPage = i;
+                filterSortPaginate();
+            });
+
+            li.appendChild(a);
+            pagination.appendChild(li);
+        }
+    }
+    
+    levelFilter.addEventListener('change', () => {
+        currentPage = 1;
+        filterSortPaginate();
+    });
+    dateSort.addEventListener('change', () => {
+        currentPage = 1;
+        filterSortPaginate();
+    });
+    
+    document.addEventListener('change', (e) => {
+        if (e.target.classList.contains('row-checkbox')) {
+            const id = parseInt(e.target.dataset.id);
+            if (e.target.checked) selectedIds.add(id);
+            else selectedIds.delete(id);
+        }
+    });
+    
     document.getElementById("exportExcelBtn").addEventListener("click", () => {
-        const selectedIds = Array.from(document.querySelectorAll(".row-checkbox:checked"))
-            .map(cb => parseInt(cb.dataset.id));
+        const idsArray = Array.from(selectedIds);
+        const fileId = @logFileId;
 
-        const fileId = @ViewBag.FileId; // или через ViewBag/FileId
         fetch(`/Log/ExportToExcel?fileId=${fileId}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(selectedIds)
+            body: JSON.stringify(idsArray)
         })
             .then(res => res.blob())
             .then(blob => {
@@ -120,4 +183,7 @@
                 URL.revokeObjectURL(url);
             });
     });
+
+    // Инициализация
+    filterSortPaginate();
 </script>
