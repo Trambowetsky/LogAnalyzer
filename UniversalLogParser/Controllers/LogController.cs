@@ -21,8 +21,7 @@ public class LogController : Controller
     {
         var logs = _context.LogEntries
             .Where(x => x.LogFileId == id)
-            .OrderByDescending(x => x.Date)
-            .Take(100)
+            .OrderBy(x => x.Date)
             .ToList();
 
         ViewBag.FileId = id;

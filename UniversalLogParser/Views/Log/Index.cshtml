@@ -20,6 +20,7 @@
             <option value="desc">Newest first</option>
             <option value="asc" selected>Oldest first</option>
         </select>
+        <input type="text" id="searchInput" class="form-control form-control-sm w-auto" placeholder="Enter keyword..." />
         <a asp-controller="Log" asp-action="Stats" asp-route-id="@logFileId" class="btn btn-outline-secondary btn-sm">
             Statistics
         </a>
@@ -43,34 +44,35 @@
     </tr>
     </thead>
     <tbody>
-        @foreach (var log in Model.OrderByDescending(x => x.Date))
-        {
+    @foreach (var log in Model.OrderBy(x => x.Date))
+    {
             
-            <tr data-level="@log.Level">
-                <td><input type="checkbox" class="row-checkbox" data-id="@log.Id" /></td>
-                <td>@log.Date.ToString("yyyy-MM-dd HH:mm:ss")</td>
-                <td>
-                    @switch (log.Level?.ToLower())
-                    {
-                        case "err":
-                            <span class="badge bg-danger text-uppercase">Error</span>
-                            break;
-                        case "wrn":
-                            <span class="badge bg-warning text-dark text-uppercase">Warning</span>
-                            break;
-                        case "dbg":
-                            <span class="badge bg-secondary text-uppercase">Debug</span>
-                            break;
-                        default:
-                            <span class="badge bg-info text-uppercase">Info</span>
-                            break;
-                    }
-                </td>
-                <td>@log.Message</td>
-            </tr>
-        }
+        <tr data-level="@log.Level">
+            <td><input type="checkbox" class="row-checkbox" data-id="@log.Id" /></td>
+            <td>@log.Date.ToString("yyyy-MM-dd HH:mm:ss")</td>
+            <td>
+                @switch (log.Level?.ToLower())
+                {
+                    case "err":
+                        <span class="badge bg-danger text-uppercase">Error</span>
+                        break;
+                    case "wrn":
+                        <span class="badge bg-warning text-dark text-uppercase">Warning</span>
+                        break;
+                    case "dbg":
+                        <span class="badge bg-secondary text-uppercase">Debug</span>
+                        break;
+                    default:
+                        <span class="badge bg-info text-uppercase">Info</span>
+                        break;
+                }
+            </td>
+            <td>@log.Message</td>
+        </tr>
+    }
     </tbody>
 </table>
+
 <nav aria-label="Pagination">
     <ul id="pagination" class="pagination justify-content-center mt-3"></ul>
 </nav>
@@ -79,9 +81,10 @@
     const levelFilter = document.getElementById('levelFilter');
     const dateSort = document.getElementById('dateSort');
     const tableBody = document.querySelector('#logTable tbody');
+    const searchInput = document.getElementById('searchInput');
     const pagination = document.getElementById('pagination');
     const allRows = Array.from(tableBody.querySelectorAll('tr'));
-    const rowsPerPage = 20;
+    const rowsPerPage = 30;
     let currentPage = 1;
 
     const selectedIds = new Set();
@@ -89,14 +92,21 @@
     function filterSortPaginate() {
         const level = levelFilter.value.toLowerCase();
         const sortOrder = dateSort.value;
-
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        
         let rows = [...allRows];
-
 
         if (level !== 'all') {
             rows = rows.filter(r => r.dataset.level.toLowerCase() === level);
         }
 
+        if (searchTerm) {
+            rows = rows.filter(r => {
+                return Array.from(r.children).some(td =>
+                    td.innerText.toLowerCase().includes(searchTerm)
+                );
+            });
+        }
 
         rows.sort((a, b) => {
             const dateA = new Date(a.children[1].innerText);
@@ -104,59 +114,110 @@
             return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
         });
 
-
         const totalPages = Math.ceil(rows.length / rowsPerPage);
         if (currentPage > totalPages) currentPage = totalPages || 1;
 
         const start = (currentPage - 1) * rowsPerPage;
         const end = start + rowsPerPage;
         const paginatedRows = rows.slice(start, end);
-        
-        tableBody.innerHTML = '';
-        paginatedRows.forEach(r => {
-            const checkbox = r.querySelector('.row-checkbox');
-            checkbox.checked = selectedIds.has(parseInt(checkbox.dataset.id));
-            tableBody.appendChild(r);
-        });
 
-        renderPagination(totalPages);
+
+        tableBody.style.opacity = 0;
+
+        setTimeout(() => {
+            tableBody.innerHTML = '';
+            paginatedRows.forEach(r => {
+                const checkbox = r.querySelector('.row-checkbox');
+                checkbox.checked = selectedIds.has(parseInt(checkbox.dataset.id));
+                tableBody.appendChild(r);
+            });
+
+            tableBody.style.transition = 'opacity 0.3s ease';
+            tableBody.style.opacity = 1;
+
+            renderPagination(totalPages);
+        }, 200);
     }
-    
+
+
     function renderPagination(totalPages) {
         pagination.innerHTML = '';
-
         if (totalPages <= 1) return;
 
-        for (let i = 1; i <= totalPages; i++) {
+        const maxVisible = 5; 
+        const pages = [];
+        
+        if (currentPage > 1) {
+            pages.push({ text: '«', page: currentPage - 1 });
+        }
+
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, currentPage + 2);
+
+        if (currentPage <= 3) {
+            endPage = Math.min(5, totalPages);
+        } else if (currentPage >= totalPages - 2) {
+            startPage = Math.max(totalPages - 4, 1);
+        }
+
+        if (startPage > 1) {
+            pages.push({ text: '1', page: 1 });
+            if (startPage > 2) pages.push({ text: '...', disabled: true });
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            pages.push({ text: i.toString(), page: i });
+        }
+
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) pages.push({ text: '...', disabled: true });
+            pages.push({ text: totalPages.toString(), page: totalPages });
+        }
+
+        if (currentPage < totalPages) {
+            pages.push({ text: '»', page: currentPage + 1 });
+        }
+
+        pages.forEach(p => {
             const li = document.createElement('li');
             li.classList.add('page-item');
-            if (i === currentPage) li.classList.add('active');
+            if (p.disabled) li.classList.add('disabled');
+            if (p.page === currentPage) li.classList.add('active');
 
             const a = document.createElement('a');
             a.classList.add('page-link');
-            a.textContent = i;
-            a.href = '#';
-            a.addEventListener('click', (e) => {
-                e.preventDefault();
-                currentPage = i;
-                filterSortPaginate();
-            });
+            a.textContent = p.text;
+            if (!p.disabled) {
+                a.href = '#';
+                a.addEventListener('click', e => {
+                    e.preventDefault();
+                    currentPage = p.page;
+                    filterSortPaginate();
+                });
+            }
 
             li.appendChild(a);
             pagination.appendChild(li);
-        }
+        });
     }
-    
+
+
     levelFilter.addEventListener('change', () => {
         currentPage = 1;
         filterSortPaginate();
     });
+
     dateSort.addEventListener('change', () => {
         currentPage = 1;
         filterSortPaginate();
     });
+
+    searchInput.addEventListener('input', () => {
+        currentPage = 1;
+        filterSortPaginate();
+    });
     
-    document.addEventListener('change', (e) => {
+    document.addEventListener('change', e => {
         if (e.target.classList.contains('row-checkbox')) {
             const id = parseInt(e.target.dataset.id);
             if (e.target.checked) selectedIds.add(id);
@@ -184,6 +245,8 @@
             });
     });
 
-    // Инициализация
+
+    tableBody.style.transition = 'opacity 0.3s ease';
     filterSortPaginate();
 </script>
+

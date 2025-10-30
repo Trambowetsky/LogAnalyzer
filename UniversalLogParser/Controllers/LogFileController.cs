@@ -70,9 +70,6 @@ public class LogFilesController : Controller
 
     protected virtual async Task<int> CreateLogFileOnUploading(IFormFile file)
     {
-        int fileId = CheckIfLogFileExists(file);
-        if (fileId > 0)
-            return fileId;
         var logFile = new LogFile {
             FileName = file.FileName,
             UploadedOn = DateTime.UtcNow,
@@ -83,7 +80,7 @@ public class LogFilesController : Controller
         
         return logFile.Id;
     }
-
+    // CheckIfFileExists not used right now
     protected virtual int CheckIfLogFileExists(IFormFile file)
     {
         var fileId = _context.LogFiles
