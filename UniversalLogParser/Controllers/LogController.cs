@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using UniversalLogParser.Data;
 using UniversalLogParser.Models;
+using ClosedXML.Excel;
 using UniversalLogParser.Services;
 
 namespace UniversalLogParser.Controllers;
@@ -145,32 +146,34 @@ public class LogController : Controller
             })
             .ToList();
 
-        using var package = new OfficeOpenXml.ExcelPackage();
-        var ws = package.Workbook.Worksheets.Add("Logs");
+        using var workbook = new XLWorkbook();
+        var ws = workbook.Worksheets.Add("Logs");
         
-        ws.Cells[1, 1].Value = "Date";
-        ws.Cells[1, 2].Value = "Level";
-        ws.Cells[1, 3].Value = "Message";
+        ws.Cell(1, 1).Value = "Date";
+        ws.Cell(1, 2).Value = "Level";
+        ws.Cell(1, 3).Value = "Message";
+        
+        var headerRange = ws.Range(1, 1, 1, 3);
+        headerRange.Style.Font.Bold = true;
+        headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
+        headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
         
         for (int i = 0; i < logs.Count; i++)
         {
             var log = logs[i];
-            ws.Cells[i + 2, 1].Value = log.Date.ToString("yyyy-MM-dd HH:mm:ss");
-            ws.Cells[i + 2, 2].Value = log.Level;
-            ws.Cells[i + 2, 3].Value = log.Message;
+            ws.Cell(i + 2, 1).Value = log.Date.ToString("yyyy-MM-dd HH:mm:ss");
+            ws.Cell(i + 2, 2).Value = log.Level;
+            ws.Cell(i + 2, 3).Value = log.Message;
         }
 
-        using (var range = ws.Cells[1, 1, 1, 3])
-        {
-            range.Style.Font.Bold = true;
-            range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-            range.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
-        }
-        ws.Cells.AutoFitColumns();
+        ws.Columns().AdjustToContents();
 
-        var stream = new MemoryStream(package.GetAsByteArray());
-        return File(stream, 
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
+        using var stream = new MemoryStream();
+        workbook.SaveAs(stream);
+        stream.Position = 0;
+
+        return File(stream.ToArray(),
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             $"log_{fileId}_{DateTime.Now:yyyyMMdd_HHmm}.xlsx");
     }
     private static bool ContainsAny(string? text, params string[] keywords)
