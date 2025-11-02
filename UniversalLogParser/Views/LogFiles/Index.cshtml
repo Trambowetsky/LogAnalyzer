@@ -3,7 +3,13 @@
 <h2>Uploaded log files</h2>
 <div class="d-flex justify-content-between align-items-center mb-3">
     <div class="d-flex align-items-center gap-2">
-        <a asp-controller="LogFiles" asp-action="Stats"  class="btn btn-outline-secondary btn-sm">
+        <label class="fw-semibold ms-4 me-2">Sort by uploaded date:</label>
+        <select id="dateSort" class="form-select form-select-sm w-auto">
+            <option value="desc">Newest first</option>
+            <option value="asc" selected>Oldest first</option>
+        </select>
+        <input type="text" id="searchInput" class="form-control form-control-sm w-auto" placeholder="Enter keyword..." />
+        <a asp-controller="LogFiles" asp-action="Stats" class="btn btn-outline-secondary btn-sm">
             Statistics
         </a>
     </div>
