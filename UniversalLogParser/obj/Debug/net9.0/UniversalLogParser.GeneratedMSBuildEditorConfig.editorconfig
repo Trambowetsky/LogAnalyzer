@@ -40,6 +40,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTG9nRmlsZXMvSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/Views/LogFiles/Stats.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTG9nRmlsZXMvU3RhdHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [/Users/alextramb/RiderProjects/UniversalLogParser/UniversalLogParser/Views/LogFiles/Upload.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTG9nRmlsZXMvVXBsb2FkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 

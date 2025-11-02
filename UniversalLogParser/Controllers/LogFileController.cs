@@ -48,6 +48,18 @@ public class LogFilesController : Controller
         return View();
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Stats()
+    {
+        return View();
+    }
+
+    public async Task<IActionResult> Download()
+    {
+        
+        return RedirectToAction("Index");
+    }
+
     [HttpPost]
     public async Task<IActionResult> Upload(IFormFile file)
     {

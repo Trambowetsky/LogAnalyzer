@@ -1,7 +1,13 @@
 @model IEnumerable<LogFileListViewModel>
 
 <h2>Uploaded log files</h2>
-
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex align-items-center gap-2">
+        <a asp-controller="LogFiles" asp-action="Stats"  class="btn btn-outline-secondary btn-sm">
+            Statistics
+        </a>
+    </div>
+</div>
 <table class="table">
     <thead>
     <tr>
@@ -26,6 +32,9 @@
             <td>
                 <a asp-controller="LogFiles" asp-action="Delete" asp-route-id="@file.Id" class="btn btn-sm btn-danger">
                     Remove
+                </a>
+                <a asp-controller="LogFiles" asp-action="Download" asp-route-id="@file.Id" class="btn btn-sm btn-primary">
+                    Download
                 </a>
             </td>
         </tr>
