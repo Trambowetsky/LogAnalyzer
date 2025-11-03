@@ -14,8 +14,8 @@
         </a>
     </div>
 </div>
-<table class="table">
-    <thead>
+<table class="table table-hover align-middle" id="logTable">
+    <thead class="table-dark">
     <tr>
         <th>File name</th>
         <th>Uploaded on</th>
@@ -24,7 +24,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (var file in Model)
+    @foreach (var file in Model.OrderBy(x => x.UploadedOn))
     {
         <tr>
             <td><a asp-controller="Log"
@@ -33,7 +33,7 @@
                    class="text-decoration-none">
                 @file.FileName
             </a></td>
-            <td>@file.UploadedOn</td>
+            <td>@file.UploadedOn.ToString("yyyy-MM-dd HH:mm:ss")</td>
             <td>@file.Count</td>
             <td>
                 <a asp-controller="LogFiles" asp-action="Delete" asp-route-id="@file.Id" class="btn btn-sm btn-danger">
@@ -47,3 +47,136 @@
     }
     </tbody>
 </table>
+<nav aria-label="Pagination">
+    <ul id="pagination" class="pagination justify-content-center mt-3"></ul>
+</nav>
+<script>
+    const dateSort = document.getElementById('dateSort');
+    const tableBody = document.querySelector('#logTable tbody');
+    const searchInput = document.getElementById('searchInput');
+    const pagination = document.getElementById('pagination');
+    const allRows = Array.from(tableBody.querySelectorAll('tr'));
+    const rowsPerPage = 30;
+    let currentPage = 1;
+
+    const selectedIds = new Set();
+
+    function filterSortPaginate() {
+        const sortOrder = dateSort.value;
+        const searchTerm = searchInput.value.toLowerCase().trim();
+
+        let rows = [...allRows];
+
+        if (searchTerm) {
+            rows = rows.filter(r => {
+                return Array.from(r.children).some(td =>
+                    td.innerText.toLowerCase().includes(searchTerm)
+                );
+            });
+        }
+
+        rows.sort((a, b) => {
+            const dateA = new Date(a.children[1].innerText);
+            const dateB = new Date(b.children[1].innerText);
+            return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+        });
+
+        const totalPages = Math.ceil(rows.length / rowsPerPage);
+        if (currentPage > totalPages) currentPage = totalPages || 1;
+
+        const start = (currentPage - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        const paginatedRows = rows.slice(start, end);
+
+
+        tableBody.style.opacity = 0;
+
+        setTimeout(() => {
+            tableBody.innerHTML = '';
+            paginatedRows.forEach(r => {
+                tableBody.appendChild(r);
+            });
+
+            tableBody.style.transition = 'opacity 0.3s ease';
+            tableBody.style.opacity = 1;
+
+            renderPagination(totalPages);
+        }, 200);
+    }
+
+
+    function renderPagination(totalPages) {
+        pagination.innerHTML = '';
+        if (totalPages <= 1) return;
+
+        const maxVisible = 5;
+        const pages = [];
+
+        if (currentPage > 1) {
+            pages.push({ text: '«', page: currentPage - 1 });
+        }
+
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, currentPage + 2);
+
+        if (currentPage <= 3) {
+            endPage = Math.min(5, totalPages);
+        } else if (currentPage >= totalPages - 2) {
+            startPage = Math.max(totalPages - 4, 1);
+        }
+
+        if (startPage > 1) {
+            pages.push({ text: '1', page: 1 });
+            if (startPage > 2) pages.push({ text: '...', disabled: true });
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            pages.push({ text: i.toString(), page: i });
+        }
+
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) pages.push({ text: '...', disabled: true });
+            pages.push({ text: totalPages.toString(), page: totalPages });
+        }
+
+        if (currentPage < totalPages) {
+            pages.push({ text: '»', page: currentPage + 1 });
+        }
+
+        pages.forEach(p => {
+            const li = document.createElement('li');
+            li.classList.add('page-item');
+            if (p.disabled) li.classList.add('disabled');
+            if (p.page === currentPage) li.classList.add('active');
+
+            const a = document.createElement('a');
+            a.classList.add('page-link');
+            a.textContent = p.text;
+            if (!p.disabled) {
+                a.href = '#';
+                a.addEventListener('click', e => {
+                    e.preventDefault();
+                    currentPage = p.page;
+                    filterSortPaginate();
+                });
+            }
+
+            li.appendChild(a);
+            pagination.appendChild(li);
+        });
+    }
+    
+    dateSort.addEventListener('change', () => {
+        currentPage = 1;
+        filterSortPaginate();
+    });
+
+    searchInput.addEventListener('input', () => {
+        currentPage = 1;
+        filterSortPaginate();
+    });
+    
+    
+    tableBody.style.transition = 'opacity 0.3s ease';
+    filterSortPaginate();
+</script>

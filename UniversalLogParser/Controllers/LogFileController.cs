@@ -26,6 +26,7 @@ public class LogFilesController : Controller
                 UploadedOn = f.UploadedOn,
                 Count = f.Entries.Count
             })
+            .OrderBy(x => x.UploadedOn)
             .ToListAsync();
 
         return View(files);
