@@ -10,6 +10,7 @@ public class LogFilesController : Controller
 {
     private readonly AppDbContext _context;
     private readonly ILogParserService _parser;
+    private string[] allowedExtensions = new[] { ".log" };
 
     public LogFilesController(AppDbContext context, ILogParserService parser)
     {
@@ -60,33 +61,11 @@ public class LogFilesController : Controller
         
         return RedirectToAction("Index");
     }
-
-    [HttpPost]
-    public async Task<IActionResult> Upload(IFormFile file)
-    {
-        if (file == null || file.Length == 0)
-        {
-            TempData["Error"] = "No file selected.";
-            return RedirectToAction("Upload");
-        }
-
-        var tempPath = Path.GetTempFileName();
-        await using (var stream = new FileStream(tempPath, FileMode.Create))
-        {
-            await file.CopyToAsync(stream);
-        }
-
-        int fileId = await CreateLogFileOnUploading(file);
-        var entries = _parser.Parse(tempPath, fileId);
-        _context.LogEntries.AddRange(entries);
-
-        await _context.SaveChangesAsync();
-
-        return RedirectToAction("Index");
-    }
+    
     [HttpPost]
     public async Task<IActionResult> UploadMultiple(List<IFormFile> files)
     {
+        
         if (files == null || files.Count == 0)
         {
             TempData["Error"] = "No files selected.";
@@ -97,7 +76,16 @@ public class LogFilesController : Controller
         {
             if (file.Length == 0)
                 continue;
+            
+            var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
 
+            if (!allowedExtensions.Contains(extension)) {
+                if(files.Count > 1)
+                    return StatusCode(409);
+                continue;
+            }
+
+            
             var tempPath = Path.GetTempFileName();
             await using (var stream = new FileStream(tempPath, FileMode.Create))
             {

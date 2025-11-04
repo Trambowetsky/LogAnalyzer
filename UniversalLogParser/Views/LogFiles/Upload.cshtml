@@ -88,7 +88,7 @@ ViewData["Title"] = "Upload Log Files or Folders";
         })
             .then(res => {
                 if (res.ok) {
-                    alert('✅ Files uploaded successfully!');
+                    console.log('✅ Files uploaded successfully!');
                     window.location.href = '/LogFiles/Index';
                 } else {
                     alert('❌ Upload failed');
