@@ -64,23 +64,54 @@ public class LogFilesController : Controller
     [HttpPost]
     public async Task<IActionResult> Upload(IFormFile file)
     {
-        if (file != null && file.Length > 0)
+        if (file == null || file.Length == 0)
         {
+            TempData["Error"] = "No file selected.";
+            return RedirectToAction("Upload");
+        }
+
+        var tempPath = Path.GetTempFileName();
+        await using (var stream = new FileStream(tempPath, FileMode.Create))
+        {
+            await file.CopyToAsync(stream);
+        }
+
+        int fileId = await CreateLogFileOnUploading(file);
+        var entries = _parser.Parse(tempPath, fileId);
+        _context.LogEntries.AddRange(entries);
+
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction("Index");
+    }
+    [HttpPost]
+    public async Task<IActionResult> UploadMultiple(List<IFormFile> files)
+    {
+        if (files == null || files.Count == 0)
+        {
+            TempData["Error"] = "No files selected.";
+            return RedirectToAction("Upload");
+        }
+
+        foreach (var file in files)
+        {
+            if (file.Length == 0)
+                continue;
+
             var tempPath = Path.GetTempFileName();
-            using (var stream = new FileStream(tempPath, FileMode.Create))
+            await using (var stream = new FileStream(tempPath, FileMode.Create))
             {
-                file.CopyTo(stream);
+                await file.CopyToAsync(stream);
             }
 
             int fileId = await CreateLogFileOnUploading(file);
             var entries = _parser.Parse(tempPath, fileId);
             _context.LogEntries.AddRange(entries);
-            _context.SaveChanges();
         }
 
+        await _context.SaveChangesAsync();
         return RedirectToAction("Index");
     }
-
     protected virtual async Task<int> CreateLogFileOnUploading(IFormFile file)
     {
         var logFile = new LogFile {

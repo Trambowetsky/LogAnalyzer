@@ -35,13 +35,15 @@
             </a></td>
             <td>@file.UploadedOn.ToString("yyyy-MM-dd HH:mm:ss")</td>
             <td>@file.Count</td>
-            <td>
-                <a asp-controller="LogFiles" asp-action="Delete" asp-route-id="@file.Id" class="btn btn-sm btn-danger">
-                    Remove
-                </a>
-                <a asp-controller="LogFiles" asp-action="Download" asp-route-id="@file.Id" class="btn btn-sm btn-primary">
-                    Download
-                </a>
+            <td class="text-center">
+                <div class="d-flex justify-content-center gap-2">
+                    <a asp-controller="LogFiles" asp-action="Delete" asp-route-id="@file.Id" class="btn btn-sm btn-danger">
+                        Remove
+                    </a>
+                    <a asp-controller="LogFiles" asp-action="Download" asp-route-id="@file.Id" class="btn btn-sm btn-primary">
+                        Download
+                    </a>
+                </div>
             </td>
         </tr>
     }

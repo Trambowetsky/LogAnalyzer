@@ -1,16 +1,16 @@
 @{
-    ViewData["Title"] = "Upload Logs";
+ViewData["Title"] = "Upload Log Files or Folders";
 }
 
-<h2 class="mb-4 text-center fw-bold">Upload log file</h2>
+<h2 class="mb-4 text-center fw-bold">Upload Log Files or Folders</h2>
 
 @if (TempData["Error"] != null)
 {
-    <div class="alert alert-danger text-center">@TempData["Error"]</div>
+<div class="alert alert-danger text-center">@TempData["Error"]</div>
 }
 @if (TempData["Success"] != null)
 {
-    <div class="alert alert-success text-center">@TempData["Success"]</div>
+<div class="alert alert-success text-center">@TempData["Success"]</div>
 }
 
 <form id="uploadForm" asp-action="Upload" asp-controller="LogFiles" method="post" enctype="multipart/form-data">
@@ -25,8 +25,75 @@
              cursor: pointer;
          ">
         <i class="bi bi-cloud-arrow-up display-1 text-primary mb-3"></i>
-        <h4 class="fw-semibold mb-2">Drag & Drop your log file here</h4>
-        <p class="text-muted">or click to select from your computer</p>
-        <input type="file" id="fileInput" name="file" hidden />
+        <h4 class="fw-semibold mb-2">Drag & Drop log files or folders here</h4>
+        <p class="text-muted mb-4">or click one of the buttons below</p>
+
+        <div class="d-flex gap-3">
+            <button type="button" id="selectFilesBtn" class="btn btn-outline-primary">Select Files</button>
+            <button type="button" id="selectFolderBtn" class="btn btn-outline-secondary">Select Folder</button>
+        </div>
+
+        <input type="file" id="fileInputFiles" name="files" multiple hidden />
+        <input type="file" id="fileInputFolder" name="files" multiple webkitdirectory hidden />
     </div>
 </form>
+
+<script>
+    const dropArea = document.getElementById('drop-area');
+    const fileInputFiles = document.getElementById('fileInputFiles');
+    const fileInputFolder = document.getElementById('fileInputFolder');
+    const form = document.getElementById('uploadForm');
+
+    // Подсветка области при перетаскивании
+    ['dragenter', 'dragover'].forEach(event => {
+        dropArea.addEventListener(event, e => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropArea.style.background = 'rgba(0, 123, 255, 0.15)';
+        });
+    });
+
+    ['dragleave', 'drop'].forEach(event => {
+        dropArea.addEventListener(event, e => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropArea.style.background = 'rgba(0, 123, 255, 0.05)';
+        });
+    });
+
+    // Drag & Drop загрузка
+    dropArea.addEventListener('drop', e => {
+        e.preventDefault();
+        const files = e.dataTransfer.files;
+        uploadFiles(files);
+    });
+
+    document.getElementById('selectFilesBtn').addEventListener('click', () => fileInputFiles.click());
+    document.getElementById('selectFolderBtn').addEventListener('click', () => fileInputFolder.click());
+
+    fileInputFiles.addEventListener('change', e => uploadFiles(e.target.files));
+    fileInputFolder.addEventListener('change', e => uploadFiles(e.target.files));
+
+    function uploadFiles(files) {
+        if (!files.length) return;
+
+        const formData = new FormData();
+        for (const file of files) {
+            formData.append('files', file);
+        }
+
+        fetch('/LogFiles/UploadMultiple', {
+            method: 'POST',
+            body: formData
+        })
+            .then(res => {
+                if (res.ok) {
+                    alert('✅ Files uploaded successfully!');
+                    window.location.href = '/LogFiles/Index';
+                } else {
+                    alert('❌ Upload failed');
+                }
+            })
+            .catch(() => alert('❌ Upload failed'));
+    }
+</script>
