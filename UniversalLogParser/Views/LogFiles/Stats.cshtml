@@ -1,0 +1,120 @@
+@{
+    ViewData["Title"] = "Log Files Dashboard";
+}
+
+<h2 class="text-center mb-4 fw-bold">📊 Logs Dashboard</h2>
+<a asp-controller="LogFiles" asp-action="Index" class="btn btn-outline-secondary btn-sm">
+    ← Back to main page
+</a>
+<div class="container">
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3">
+                <h5 class="text-center">📁 Amount of entries per file</h5>
+                <canvas id="fileCountChart" height="250"></canvas>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3">
+                <h5 class="text-center">⚠️ Average error amount</h5>
+                <canvas id="errorRatioChart" height="250"></canvas>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card shadow-sm p-3">
+                <h5 class="text-center">⏱ Activity by time</h5>
+                <canvas id="activityChart" height="250"></canvas>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 mx-auto">
+            <div class="card shadow-sm p-3 text-center">
+                <h5 class="text-center mb-3">Log Level Distribution</h5>
+                <div class="d-flex justify-content-center align-items-center" style="height: 400px;">
+                    <canvas id="logLevelDistrChart" style="max-height: 350px; width: 100%; max-width: 500px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const res = await fetch('/LogFiles/GetDashboardData');
+            const data = await res.json();
+            
+            new Chart(document.getElementById('fileCountChart'), {
+                type: 'bar',
+                data: {
+                    labels: data.fileNames,
+                    datasets: [{
+                        label: 'Amount of entries',
+                        data: data.entryCounts,
+                        borderWidth: 1,
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)'
+                    }]
+                },
+                options: { scales: { y: { beginAtZero: true } } }
+            });
+            
+            new Chart(document.getElementById('errorRatioChart'), {
+                type: 'bar',
+                data: {
+                    labels: data.fileNames,
+                    datasets: [{
+                        label: '% errors & warns',
+                        data: data.errorRatios,
+                        backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { callback: v => v + '%' }
+                        }
+                    }
+                }
+            });
+            
+            new Chart(document.getElementById('activityChart'), {
+                type: 'line',
+                data: {
+                    labels: data.activity.map(a => a.hour + ':00'),
+                    datasets: [{
+                        label: 'Message amount',
+                        data: data.activity.map(a => a.count),
+                        borderColor: 'rgba(75, 192, 192, 0.8)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
+            
+            new Chart(document.getElementById('logLevelDistrChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: data.levelDistribution.map(l => l.level),
+                    datasets: [{
+                        data: data.levelDistribution.map(l => l.count),
+                        backgroundColor: ['#4e79a7','#f28e2b','#e15759','#76b7b2','#59a14f']
+                    }]
+                },
+                options: {
+                    plugins: { title: { display: true, text: 'Log Level Distribution' } }
+                }
+            });
+        });
+    </script>
+}

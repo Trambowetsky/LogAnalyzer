@@ -175,4 +175,48 @@ public class LogFilesController : Controller
 
         return RedirectToAction(nameof(Index));
     }
+    [HttpGet]
+    public async Task<IActionResult> GetDashboardData()
+    {
+        var files = await _context.LogFiles
+            .Include(f => f.Entries)
+            .ToListAsync();
+
+        var fileNames = files.Select(f => f.FileName).ToList();
+        var entryCounts = files.Select(f => f.Entries.Count).ToList();
+
+        var errorRatios = files.Select(f =>
+        {
+            var total = f.Entries.Count;
+            if (total == 0) return 0;
+            var err = f.Entries.Count(e => e.Level != null && 
+                                           (e.Level.Contains("ERR") || e.Level.Contains("ERROR")));
+            var wrn = f.Entries.Count(e => e.Level != null && 
+                                           (e.Level.Contains("WRN") || e.Level.Contains("WARN")));
+            return Math.Round((double)(err + wrn) / total * 100, 2);
+        }).ToList();
+        
+        var allEntries = files.SelectMany(f => f.Entries).ToList();
+        var activity = allEntries
+            .GroupBy(e => e.Date.Hour)
+            .Select(g => new { hour = g.Key, count = g.Count() })
+            .OrderBy(g => g.hour)
+            .ToList();
+        
+        var levelDistribution = _context.LogEntries
+            .GroupBy(e => e.Level)
+            .Select(g => new { Level = g.Key ?? "Unknown", Count = g.Count() })
+            .ToList();
+
+        var data = new
+        {
+            fileNames,
+            entryCounts,
+            errorRatios,
+            activity,
+            levelDistribution
+        };
+
+        return Json(data);
+    }
 }

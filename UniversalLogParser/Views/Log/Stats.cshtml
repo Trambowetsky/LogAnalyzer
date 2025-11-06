@@ -1,115 +1,138 @@
 @{
-ViewData["Title"] = "Statistics for " + ViewBag.FileName;
+    ViewData["Title"] = "Statistics for " + ViewBag.FileName;
 }
 
-<h2>@ViewData["Title"]</h2>
+<div class="container mt-5">
+    <h2 class="text-center mb-4 fw-bold">@ViewData["Title"]</h2>
 
-<a asp-controller="Log" asp-action="Index" asp-route-id="@ViewBag.FileId" class="btn btn-outline-secondary btn-sm">
-    ← Back to entries
-</a>
-<div style="display: flex; justify-content: center; align-items: flex-start; gap: 40px; margin-top: 40px;">
-    <div style="width: 600px; height: 300px;">
-        <canvas id="logChart"></canvas>
+    <div class="text-center mb-4">
+        <a asp-controller="Log" asp-action="Index" asp-route-id="@ViewBag.FileId"
+           class="btn btn-outline-light btn-sm px-4 py-2 shadow-sm">
+            ← Back to Entries
+        </a>
     </div>
-    <div style="width: 600px; height: 300px;">
-        <canvas id="logPeriodChart"></canvas>
+
+    <!-- Первая строка -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm p-4 h-100 text-center">
+                <h5 class="fw-semibold mb-3">Log Levels</h5>
+                <canvas id="logChart" style="height: 300px;"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm p-4 h-100 text-center">
+                <h5 class="fw-semibold mb-3">Log Activity Over Time</h5>
+                <canvas id="logPeriodChart" style="height: 300px;"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Вторая строка -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-5">
+            <div class="card shadow-sm p-4 h-100 text-center">
+                <h5 class="fw-semibold mb-3">Message Type Ratio</h5>
+                <div class="d-flex justify-content-center align-items-center" style="height: 300px;">
+                    <canvas id="logCategoryChart" style="max-height: 280px; width: 100%; max-width: 400px;"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div class="card shadow-sm p-4 h-100 text-center">
+                <h5 class="fw-semibold mb-3">Log Activity Heatmap</h5>
+                <canvas id="logHeatmap" style="height: 300px;"></canvas>
+            </div>
+        </div>
     </div>
 </div>
-<div style="display: flex; justify-content: center; align-items: flex-start; gap: 40px; margin-top: 40px;">
-    <div class="chart-box" style="width: 300px; height: 300px; margin: auto;">
-        <canvas id="logCategoryChart"></canvas>
-    </div>
-    <div class="chart-box" style="width: 600px; height: 300px; margin: auto;">
-        <canvas id="logHeatmap"></canvas>
-    </div>
-</div>
 
-
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix/dist/chartjs-chart-matrix.min.js"></script>
+
 <script>
     const fileId = @ViewBag.FileId;
 
+    // === 1. Количество записей по уровням ===
     fetch(`/Log/GetLevelStats?fileId=${fileId}`)
         .then(res => res.json())
         .then(data => {
-            const ctx = document.getElementById('logChart').getContext('2d');
-            new Chart(ctx, {
+            new Chart(document.getElementById('logChart'), {
                 type: 'bar',
                 data: {
                     labels: data.map(x => x.level),
                     datasets: [{
                         label: 'Count by level',
                         data: data.map(x => x.count),
-                        backgroundColor: ['#D3D3D3', '#ff6384', '#36a2eb', "#ffce56"]
+                        backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0']
                     }]
                 },
                 options: {
-                    scales: { y: { beginAtZero: true } }
+                    scales: { y: { beginAtZero: true } },
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: false }
+                    }
                 }
             });
         });
 
+    // === 2. Активность по времени ===
     fetch(`/Log/GetPeriodStats?fileId=${fileId}`)
         .then(res => res.json())
         .then(data => {
-            const ctx = document.getElementById('logPeriodChart').getContext('2d');
-            const labels = data.map(x => x.time);
-            const counts = data.map(x => x.count);
-            new Chart(ctx, {
+            new Chart(document.getElementById('logPeriodChart'), {
                 type: 'line',
                 data: {
-                    labels: labels,
+                    labels: data.map(x => x.time),
                     datasets: [{
-                        label: 'Log activity over time',
-                        data: counts,
+                        label: 'Activity',
+                        data: data.map(x => x.count),
                         borderColor: '#36A2EB',
                         fill: false,
                         tension: 0.2
-                    }]
-                }
-            });
-        });
-    fetch(`/Log/GetCategoryStats?fileId=${fileId}`)
-        .then(res => res.json())
-        .then(data => {
-            const ctx = document.getElementById('logCategoryChart').getContext('2d');
-            const labels = Object.keys(data);
-            const counts = Object.values(data);
-
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Message Type Distribution',
-                        data: counts,
-                        backgroundColor: [
-                            '#36A2EB', // Database
-                            '#FFCE56', // Network
-                            '#FF6384', // UI
-                            '#4BC0C0', // File
-                            '#AAAAAA'  // Other
-                        ]
                     }]
                 },
                 options: {
                     plugins: {
                         legend: { display: false },
-                        title: {
-                            display: true,
-                            text: 'Message type ratio',
-                            color: '#fff'
-                        }
                     }
                 }
             });
         });
+
+    // === 3. Типы сообщений ===
+    fetch(`/Log/GetCategoryStats?fileId=${fileId}`)
+        .then(res => res.json())
+        .then(data => {
+            const labels = Object.keys(data);
+            const counts = Object.values(data);
+
+            new Chart(document.getElementById('logCategoryChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: counts,
+                        backgroundColor: [
+                            '#36A2EB', '#FFCE56', '#FF6384', '#4BC0C0', '#AAAAAA'
+                        ]
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        });
+
+    // === 4. Тепловая карта активности ===
     fetch(`/Log/GetHeatmapData?fileId=${fileId}`)
         .then(res => res.json())
         .then(data => {
             const ctx = document.getElementById('logHeatmap').getContext('2d');
-
             const hours = [...new Set(data.map(d => d.x))];
             const levels = [...new Set(data.map(d => d.y))];
 
@@ -120,44 +143,39 @@ ViewData["Title"] = "Statistics for " + ViewBag.FileName;
                         label: 'Log Heatmap',
                         data: data,
                         backgroundColor: c => {
-                            const value = c.raw.v;
-                            const alpha = Math.min(0.8, 0.2 + value / 10);
-                            return `rgba(75, 192, 192, ${alpha})`;
+                            const v = c.raw.v;
+                            const alpha = Math.min(0.8, 0.2 + v / 10);
+                            return `rgba(75,192,192,${alpha})`;
                         },
-                        width: ({chart}) => (chart.width / hours.length) - 45,
-                        height: ({chart}) => (chart.height / levels.length) - 45,
+                        width: ({chart}) => (chart.width / hours.length) - 20,
+                        height: ({chart}) => (chart.height / levels.length) - 20,
                     }]
                 },
                 options: {
                     scales: {
-                        x: {
-                            type: 'category',
-                            labels: hours,
-                            title: { display: true, text: 'Hours' },
-                            grid: { display: false }
-                        },
-                        y: {
-                            type: 'category',
-                            labels: levels,
-                            title: { display: true, text: 'Log Levels' },
-                            grid: { display: false }
-                        }
+                        x: { type: 'category', labels: hours, title: { display: true, text: 'Hours' } },
+                        y: { type: 'category', labels: levels, title: { display: true, text: 'Levels' } }
                     },
                     plugins: {
                         legend: { display: false },
-                        title: {
-                            display: true,
-                            text: 'Log activity heatmap',
-                            color: '#fff',
-                            font: { size: 12, weight: 'bold' }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: ctx => `Count: ${ctx.raw.v}`
-                            }
-                        }
+                        tooltip: { callbacks: { label: ctx => `Count: ${ctx.raw.v}` } }
                     }
                 }
             });
         });
 </script>
+
+<style>
+    body {
+        background-color: #1E1E1E;
+        color: #E0E0E0;
+    }
+    .card {
+        background-color: #2A2A2A;
+        border: 1px solid #333;
+        border-radius: 16px;
+    }
+    h5 {
+        color: #EAEAEA;
+    }
+</style>
