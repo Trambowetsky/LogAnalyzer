@@ -2,38 +2,43 @@
     ViewData["Title"] = "Log Files Dashboard";
 }
 
-<h2 class="text-center mb-4 fw-bold">📊 Logs Dashboard</h2>
-<a asp-controller="LogFiles" asp-action="Index" class="btn btn-outline-secondary btn-sm">
-    ← Back to main page
-</a>
-<div class="container">
-    <div class="row g-4">
+<div class="container mt-5">
+    <h2 class="text-center mb-4 fw-bold text-light">Logs Dashboard</h2>
+
+    <div class="text-center mb-4">
+        <a asp-controller="LogFiles" asp-action="Index"
+           class="btn btn-outline-light btn-sm px-4 py-2 shadow-sm">
+            ← Back to main page
+        </a>
+    </div>
+
+    <div class="row g-4 mb-5">
         <div class="col-md-6">
-            <div class="card shadow-sm p-3">
-                <h5 class="text-center">📁 Amount of entries per file</h5>
-                <canvas id="fileCountChart" height="250"></canvas>
+            <div class="card shadow-sm p-4 h-100 text-center">
+                <h5 class="fw-semibold mb-3 text-light">Amount of Entries per File</h5>
+                <canvas id="fileCountChart" style="height: 300px;"></canvas>
             </div>
         </div>
 
         <div class="col-md-6">
-            <div class="card shadow-sm p-3">
-                <h5 class="text-center">⚠️ Average error amount</h5>
-                <canvas id="errorRatioChart" height="250"></canvas>
+            <div class="card shadow-sm p-4 h-100 text-center">
+                <h5 class="fw-semibold mb-3 text-light">Average Error Amount</h5>
+                <canvas id="errorRatioChart" style="height: 300px;"></canvas>
             </div>
         </div>
 
         <div class="col-12">
-            <div class="card shadow-sm p-3">
-                <h5 class="text-center">⏱ Activity by time</h5>
-                <canvas id="activityChart" height="250"></canvas>
+            <div class="card shadow-sm p-4 h-100 text-center">
+                <h5 class="fw-semibold mb-3 text-light">Activity by Time</h5>
+                <canvas id="activityChart" style="height: 300px;"></canvas>
             </div>
         </div>
 
         <div class="col-12 col-md-6 mx-auto">
-            <div class="card shadow-sm p-3 text-center">
-                <h5 class="text-center mb-3">Log Level Distribution</h5>
-                <div class="d-flex justify-content-center align-items-center" style="height: 400px;">
-                    <canvas id="logLevelDistrChart" style="max-height: 350px; width: 100%; max-width: 500px;"></canvas>
+            <div class="card shadow-sm p-4 h-100 text-center">
+                <h5 class="fw-semibold mb-3 text-light">Log Level Distribution</h5>
+                <div class="d-flex justify-content-center align-items-center" style="height: 300px;">
+                    <canvas id="logLevelDistrChart" style="max-height: 280px; width: 100%; max-width: 400px;"></canvas>
                 </div>
             </div>
         </div>
@@ -46,30 +51,30 @@
         document.addEventListener("DOMContentLoaded", async () => {
             const res = await fetch('/LogFiles/GetDashboardData');
             const data = await res.json();
-            
+
             new Chart(document.getElementById('fileCountChart'), {
                 type: 'bar',
                 data: {
                     labels: data.fileNames,
                     datasets: [{
-                        label: 'Amount of entries',
+                        label: 'Entries',
                         data: data.entryCounts,
-                        borderWidth: 1,
-                        backgroundColor: 'rgba(54, 162, 235, 0.6)'
+                        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                        borderRadius: 6
                     }]
                 },
                 options: { scales: { y: { beginAtZero: true } } }
             });
-            
+
             new Chart(document.getElementById('errorRatioChart'), {
                 type: 'bar',
                 data: {
                     labels: data.fileNames,
                     datasets: [{
-                        label: '% errors & warns',
+                        label: '% Errors & Warnings',
                         data: data.errorRatios,
-                        backgroundColor: 'rgba(255, 99, 132, 0.6)',
-                        borderWidth: 1
+                        backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                        borderRadius: 6
                     }]
                 },
                 options: {
@@ -81,27 +86,21 @@
                     }
                 }
             });
-            
+
             new Chart(document.getElementById('activityChart'), {
                 type: 'line',
                 data: {
                     labels: data.activity.map(a => a.hour + ':00'),
                     datasets: [{
-                        label: 'Message amount',
+                        label: 'Messages',
                         data: data.activity.map(a => a.count),
-                        borderColor: 'rgba(75, 192, 192, 0.8)',
-                        tension: 0.4,
-                        fill: true
+                        borderColor: '#4BC0C0',
+                        fill: true,
+                        tension: 0.4
                     }]
-                },
-                options: {
-                    scales: {
-                        y: { beginAtZero: true }
-                    }
                 }
             });
 
-            
             new Chart(document.getElementById('logLevelDistrChart'), {
                 type: 'doughnut',
                 data: {
@@ -111,10 +110,20 @@
                         backgroundColor: ['#4e79a7','#f28e2b','#e15759','#76b7b2','#59a14f']
                     }]
                 },
-                options: {
-                    plugins: { title: { display: true, text: 'Log Level Distribution' } }
-                }
+                options: { plugins: { legend: { position: 'bottom' } } }
             });
         });
     </script>
 }
+
+<style>
+    body {
+        background-color: #1E1E1E;
+        color: #E0E0E0;
+    }
+    .card {
+        background-color: #2A2A2A;
+        border: 1px solid #333;
+        border-radius: 16px;
+    }
+</style>

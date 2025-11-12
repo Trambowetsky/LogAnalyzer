@@ -3,7 +3,7 @@
 }
 
 <div class="container mt-5">
-    <h2 class="text-center mb-4 fw-bold">@ViewData["Title"]</h2>
+    <h2 class="text-center mb-4 fw-bold text-light">@ViewData["Title"]</h2>
 
     <div class="text-center mb-4">
         <a asp-controller="Log" asp-action="Index" asp-route-id="@ViewBag.FileId"
@@ -12,27 +12,22 @@
         </a>
     </div>
 
-    <!-- Первая строка -->
-    <div class="row g-4 mb-4">
+    <div class="row g-4 mb-5">
         <div class="col-md-6">
             <div class="card shadow-sm p-4 h-100 text-center">
-                <h5 class="fw-semibold mb-3">Log Levels</h5>
+                <h5 class="fw-semibold mb-3 text-light">Log Levels</h5>
                 <canvas id="logChart" style="height: 300px;"></canvas>
             </div>
         </div>
         <div class="col-md-6">
             <div class="card shadow-sm p-4 h-100 text-center">
-                <h5 class="fw-semibold mb-3">Log Activity Over Time</h5>
+                <h5 class="fw-semibold mb-3 text-light">Activity Over Time</h5>
                 <canvas id="logPeriodChart" style="height: 300px;"></canvas>
             </div>
         </div>
-    </div>
-
-    <!-- Вторая строка -->
-    <div class="row g-4 mb-5">
         <div class="col-md-5">
             <div class="card shadow-sm p-4 h-100 text-center">
-                <h5 class="fw-semibold mb-3">Message Type Ratio</h5>
+                <h5 class="fw-semibold mb-3 text-light">Message Type Ratio</h5>
                 <div class="d-flex justify-content-center align-items-center" style="height: 300px;">
                     <canvas id="logCategoryChart" style="max-height: 280px; width: 100%; max-width: 400px;"></canvas>
                 </div>
@@ -40,47 +35,38 @@
         </div>
         <div class="col-md-7">
             <div class="card shadow-sm p-4 h-100 text-center">
-                <h5 class="fw-semibold mb-3">Log Activity Heatmap</h5>
+                <h5 class="fw-semibold mb-3 text-light">Activity Heatmap</h5>
                 <canvas id="logHeatmap" style="height: 300px;"></canvas>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix/dist/chartjs-chart-matrix.min.js"></script>
 
 <script>
     const fileId = @ViewBag.FileId;
 
-    // === 1. Количество записей по уровням ===
     fetch(`/Log/GetLevelStats?fileId=${fileId}`)
-        .then(res => res.json())
+        .then(r => r.json())
         .then(data => {
             new Chart(document.getElementById('logChart'), {
                 type: 'bar',
                 data: {
                     labels: data.map(x => x.level),
                     datasets: [{
-                        label: 'Count by level',
+                        label: 'Count by Level',
                         data: data.map(x => x.count),
                         backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0']
                     }]
                 },
-                options: {
-                    scales: { y: { beginAtZero: true } },
-                    plugins: {
-                        legend: { display: false },
-                        title: { display: false }
-                    }
-                }
+                options: { scales: { y: { beginAtZero: true } } }
             });
         });
 
-    // === 2. Активность по времени ===
     fetch(`/Log/GetPeriodStats?fileId=${fileId}`)
-        .then(res => res.json())
+        .then(r => r.json())
         .then(data => {
             new Chart(document.getElementById('logPeriodChart'), {
                 type: 'line',
@@ -93,44 +79,28 @@
                         fill: false,
                         tension: 0.2
                     }]
-                },
-                options: {
-                    plugins: {
-                        legend: { display: false },
-                    }
                 }
             });
         });
 
-    // === 3. Типы сообщений ===
     fetch(`/Log/GetCategoryStats?fileId=${fileId}`)
-        .then(res => res.json())
+        .then(r => r.json())
         .then(data => {
-            const labels = Object.keys(data);
-            const counts = Object.values(data);
-
             new Chart(document.getElementById('logCategoryChart'), {
                 type: 'doughnut',
                 data: {
-                    labels: labels,
+                    labels: Object.keys(data),
                     datasets: [{
-                        data: counts,
-                        backgroundColor: [
-                            '#36A2EB', '#FFCE56', '#FF6384', '#4BC0C0', '#AAAAAA'
-                        ]
+                        data: Object.values(data),
+                        backgroundColor: ['#36A2EB','#FFCE56','#FF6384','#4BC0C0','#AAAAAA']
                     }]
                 },
-                options: {
-                    plugins: {
-                        legend: { position: 'bottom' }
-                    }
-                }
+                options: { plugins: { legend: { position: 'bottom' } } }
             });
         });
 
-    // === 4. Тепловая карта активности ===
     fetch(`/Log/GetHeatmapData?fileId=${fileId}`)
-        .then(res => res.json())
+        .then(r => r.json())
         .then(data => {
             const ctx = document.getElementById('logHeatmap').getContext('2d');
             const hours = [...new Set(data.map(d => d.x))];
@@ -148,7 +118,7 @@
                             return `rgba(75,192,192,${alpha})`;
                         },
                         width: ({chart}) => (chart.width / hours.length) - 20,
-                        height: ({chart}) => (chart.height / levels.length) - 20,
+                        height: ({chart}) => (chart.height / levels.length) - 20
                     }]
                 },
                 options: {
